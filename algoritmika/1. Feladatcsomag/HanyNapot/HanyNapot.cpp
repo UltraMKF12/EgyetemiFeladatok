@@ -26,7 +26,7 @@ int HanySzokoev(unsigned long kezdet, unsigned long veg)
     }
 
     //Ez kiszámolja 0 tól x ig a szökőévek számát.
-    unsigned long ujEv = veg - kezdet;
+    long long ujEv = (long long)veg - kezdet; // Erre szükség van, mert másként integer overflow lesz.
     if(ujEv > 0)
     {
         szokoEvekSzama += (ujEv / 4) - (ujEv / 100) + (ujEv / 400);
