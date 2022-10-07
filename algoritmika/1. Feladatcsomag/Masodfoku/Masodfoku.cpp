@@ -32,15 +32,20 @@ int main()
         }
     }
 
-    else if (delta == 0)
-    {
-        long double megoldas = (-b + sqrt(delta)) / (2*a);
-        cerr << "Az egyenletnek egy megoldasa van: " << megoldas;
-    }
+    // else if (delta == 0)
+    // {
+    //     long double megoldas = (-b + sqrt(delta)) / (2*a);
+    //     cerr << "Az egyenletnek egy megoldasa van: " << megoldas;
+    // }
+
+    // else
+    // {
+    //     cerr << "Az egyenlet nem megoldható!";
+    // }
 
     else
     {
-        cerr << "Az egyenlet nem megoldható!";
+        cerr << "Hiba!";
     }
     
     return 0;
