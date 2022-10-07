@@ -17,7 +17,7 @@ int main()
 
     long double delta = (b*b) - (4*a*c);
 
-    if (delta > 0)
+    if (delta > 0 && a != 0) // Delta > 0 - Azt jelenti, hogy 2 megoldas van, a != 0, ha az elso szam 0, akkor csak x van, azaz 1 megoldas.
     {
         long double megoldas1 = (-b + sqrt(delta)) / (2*a);
         long double megoldas2 = (-b - sqrt(delta)) / (2*a);
