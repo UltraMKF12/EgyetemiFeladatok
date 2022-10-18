@@ -12,6 +12,7 @@
 ; Compile:
 ; nasm -f win32 L1\L1b_8_sjim2307.asm
 ; nlink L1\L1b_8_sjim2307.obj -lio -o L1\L1b_8_sjim2307.exe
+; actest L1b_8 L1\L1b_8_sjim2307.exe
 
 %include 'io.inc'
 
@@ -43,6 +44,34 @@ main:
     call    io_readint
     mov     [d], eax
     
+    ;(NOT a) AND((NOT c) OR(b AND d)) XOR b
+    ; First text, then result
+
+    mov     eax, str_result
+    call    io_writestr
+
+    ;(NOT a) -> eax
+    mov     eax, [a]
+    NOT     eax
+
+    ;(NOT c) -> ecx
+    mov     ecx, [c]
+    NOT     ecx
+
+    ;(b AND d) -> ebx
+    mov     ebx, [b]
+    AND     ebx, [d]
+
+    ;(NOT c) OR(b AND d) -> ecx
+    OR      ecx, ebx
+
+    ;(NOT a) AND((NOT c) OR(b AND d)) -> eax
+    AND     eax, ecx
+
+    ;(NOT a) AND((NOT c) OR(b AND d)) XOR b -> eax
+    XOR     eax, [b]
+
+    call    io_writebin
     ret
     
 section .data

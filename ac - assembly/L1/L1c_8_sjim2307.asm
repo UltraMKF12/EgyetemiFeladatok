@@ -15,6 +15,7 @@
 ; Compile:
 ; nasm -f win32 L1\L1c_8_sjim2307.asm
 ; nlink L1\L1c_8_sjim2307.obj -lio -o L1\L1c_8_sjim2307.exe
+; actest L1c_8 L1\L1c_8_sjim2307.exe
 
 %include 'io.inc'
 
@@ -125,6 +126,7 @@ main:
 
         ; First text, then result
         mov     eax, str_result3
+        call    io_writestr
 
         ;(b * a) -> eax
         mov     eax, [a]
@@ -138,7 +140,6 @@ main:
         sub     eax, ecx
 
         call    io_writeint
-        call    io_writestr
         jmp     .end
 
     .end:
