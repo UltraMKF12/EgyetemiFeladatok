@@ -1,6 +1,9 @@
 // Széri József - sjim2307
 // Sorozatgeneralas
-// KIJELENTES
+/*
+Adott a következő sorozat, amelynek minden elemét – az elsőt kivéve – az
+előző elem segítségével generáljuk: 1, 11, 21, 1211, 111221, . . .
+*/
 
 #include <iostream>
 using namespace std;
@@ -10,8 +13,7 @@ int main()
     freopen("bemenet.txt", "r", stdin);
     freopen("kimenet.txt", "w", stdout);
 
-    int alma;
-    cin >> alma;
-    cout << "Hello World!";
+    int n;
+    cin >> n;
     return 0;
 }
