@@ -3,16 +3,39 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+int kiszamitSzovegHossz(int karakterHossz, char * szoveg)
+{
+    int szovegHossz = 0;
+    for(int i = 0; i < karakterHossz; i++)
+    {
+        if(szoveg[i] != '\0')
+        {
+            szovegHossz++;
+        }
+        else
+        {
+            break;
+        }
+    }
+    return szovegHossz;
+}
+
 int main()
 {
+    FILE *f;
+    f = fopen("input.txt", "r");
     //Bemenet megnyitása, és leellenőrzni, hogy sikerült megnyitni.
     //Max 255 karakter hosszuságu karakterlánc
-    char szoveg[255];
-    scanf("%s", szoveg);
-
-    //Standard bemenet:
-    //3db szám 0-9 között + hibaellenőrzés
-    //1db 3 betüs karakterlánc + hibaellenőrzés
+    if(f == NULL)
+    {
+        printf("HIBA: Nem lehetett megnyitni a fajlt!");
+        exit(0);
+    }
+    char szoveg[256];
+    fgets(szoveg, 256, f);
+    fclose(f);
+    int szovegHossz = kiszamitSzovegHossz(255, szoveg);
 
     //Három darak szám beolvasása
     int szam1, szam2, szam3;
@@ -28,15 +51,20 @@ int main()
     if((szam1 < 0 || szam1 > 9) || (szam2 < 0 || szam2 > 9) || (szam3 < 0 || szam3 > 9))
     {
         printf("HIBA: A szamok kozul egy vagy tobb nincs benne a [0-9] intervallumban!");
-        //Kilepes a programbol
+        exit(0);
     }
 
     char titkosKulcs[100];
     printf("Titkos Kulcs = ");
-    scanf("%s", titkosKulcs);
-    if(1)
+    getchar();
+
+    gets(titkosKulcs);
+
+    int titkosKulcsHossz = kiszamitSzovegHossz(4, titkosKulcs);
+    if(titkosKulcsHossz < 3 || titkosKulcsHossz > 3)
     {
-        //Kileps ha kevesebb vagy tobb mint 3 karakter
+        printf("HIBA: A titkos kulcs hossza pontosan 3 karakter hosszu kell legyen!");
+        exit(0);
     }
 
     /*
@@ -52,14 +80,17 @@ int main()
     char szo_bitterkep = titkosKulcs[0] | titkosKulcs[1] & titkosKulcs[2];
     int D = szam1 << ~abs(szam2 - szam3);
 
-    for(int i = 0; i < 255; i++)
+    char ujSzoveg[255] = {'\0'};
+    for(int i = 0; i < szovegHossz; i++)
     {
-            szoveg[i] = szoveg[i] ^ D ^ szo_bitterkep;
+        ujSzoveg[i] = szoveg[i] ^ D ^ szo_bitterkep;
     }
 
 
     //kiiratni output.txt be az igy kapott uj karakterlancot.
-    printf("%s", szoveg);
+    f = fopen("output.txt", "w");
+    fprintf(f, "%s", ujSzoveg);
+    fclose(f);
 
     //Kiiratni az ascii táblát
         for(int i = 0; i <= 25; i++)
