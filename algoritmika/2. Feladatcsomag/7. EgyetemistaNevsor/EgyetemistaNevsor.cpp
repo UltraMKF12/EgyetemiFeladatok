@@ -9,68 +9,86 @@ Adottak az elsőéves egyetemisták névsorai (abc sorrendben), csoportonként.
 #include <vector>
 using namespace std;
 
-bool nagyobb_abc(string elso, string masodik)
+vector<string> osszefesules(const vector<string> &vektor1, const vector<string> &vektor2)
 {
-    bool nagyobb = true;
-    int index = 0;
-    int elso_hossz = elso.size();
-    int masodik_hossz = masodik.size();
-    int kissebb_hossz = (elso_hossz < masodik_hossz) ? elso_hossz : masodik_hossz;
+    int hossz1 = vektor1.size();
+    int hossz2 = vektor2.size();
 
-    int index1 = 0;
-    int index2 = 0;
-    while((index <= kissebb_hossz-1) && nagyobb)
+    vector<string> vektor_eredmeny;
+    int i = 0;
+    int j = 0;
+    while((i < hossz1) && (j < hossz2))
     {
-        if(elso[index1] > masodik[index2])
+        if(vektor1[i].compare(vektor2[j]) < 0) // ha .compare() visszteritett erteke < 0 akkor az elso string elobb van abc sorrendben
         {
-            //
+            vektor_eredmeny.push_back(vektor1[i]);
+            i++;
+        }
+        else
+        {
+            vektor_eredmeny.push_back(vektor2[j]);
+            j++;
         }
     }
 
-    return nagyobb;
-}
+    while(i < hossz1)
+    {
+        vektor_eredmeny.push_back(vektor1[i]);
+        i++;
+    }
 
-int string_osszefesulet(int hossz1, vector<string> &vektor1, 
-                        int hossz2, vector<string> &vektor2,
-                                    vector<string> &vektor_eredmeny)
-{
-    return 1;
+    while(j < hossz2)
+    {
+        vektor_eredmeny.push_back(vektor2[j]);
+        j++;
+    }
+
+    return vektor_eredmeny;
 }
 
 int main()
 {
-    freopen("bemenet.txt", "r", stdin);
-    freopen("kimenet.txt", "w", stdout);
+    // freopen("bemenet.txt", "r", stdin);
+    // freopen("kimenet.txt", "w", stdout);
 
+    //Beolvasas
     int csoportok_szama;
     cin >> csoportok_szama; 
 
-    // Megszerezni az első diákokat.
-    int jelenlegi_csoport_hossz;
-    cin >> jelenlegi_csoport_hossz;
-    getchar(); // Elnyelni a new line karaktert
-    vector<string> eredmeny;
-    int eredmeny_hossz = jelenlegi_csoport_hossz;
-    for (int i = 0; i < jelenlegi_csoport_hossz; i++)
+    vector<vector<string>> diakok(csoportok_szama, vector<string>());
+    for (int i = 0; i < csoportok_szama; i++)
     {
-        string diak;
-        getline(cin, diak);
-        eredmeny.push_back(diak);
+        int diakok_szama;
+        cin >> diakok_szama;
+        getchar(); //Elnyelni a new linet
+        for (int j = 0; j < diakok_szama; j++)
+        {
+            string diak;
+            getline(cin, diak);
+            diakok[i].push_back(diak);
+        }
     }
-    
-    //Osszefesulni az eredmenyt egyenként a többi diák csoporttal
-    for (int i = 1; i < csoportok_szama; i++)
-    {
-        //
-    }
-    
 
-    //Kiiratas
+    
+    //Feladat megoldasa - minden diak osszefesulese az eredmeny-el egyenkent.
+    vector<string> eredmeny;
+    int diakok_hossz = diakok.size();
+    for (int i = 0; i < diakok_hossz; i++)
+    {
+        eredmeny = osszefesules(diakok[i], eredmeny);
+    }
+
+
+    //Feladat kiirasa
+    int eredmeny_hossz = eredmeny.size();
     for (int i = 0; i < eredmeny_hossz; i++)
     {
-        cout << eredmeny[i] << endl;
+        cout << eredmeny[i];
+        if(i < eredmeny_hossz-1) // A feladat vegen ne legyen egy felesleges new line
+        {
+            cout << endl;
+        }
     }
     
-
     return 0;
 }

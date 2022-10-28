@@ -14,12 +14,12 @@ unsigned int legkisebbOszto(unsigned int szam)
 
     // Szám legkisebb prím osztója
     unsigned int oszto = 3;
-    while((oszto*oszto <= szam) && (szam % oszto != 0))
+    while((oszto <= szam/2+1) && (szam % oszto != 0))
     {
         oszto += 2;
     }
 
-    if(oszto*oszto > szam)
+    if(oszto > szam/2+1)
     {
         oszto = szam;
     }
