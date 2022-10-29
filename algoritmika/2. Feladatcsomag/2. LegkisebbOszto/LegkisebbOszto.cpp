@@ -3,6 +3,7 @@
 // Határozzuk meg egy adott 𝑥 természetes szám legkisebb osztóját, amely nagyobb mint 1!
 
 #include <iostream>
+#include <math.h>
 using namespace std;
 
 unsigned int legkisebbOszto(unsigned int szam)
@@ -12,14 +13,15 @@ unsigned int legkisebbOszto(unsigned int szam)
         return 2;
     }
 
-    // Szám legkisebb prím osztója
+    // Elmenni a szám gyökéig. Ha nem találunk osztót, akkor a szám prim.
     unsigned int oszto = 3;
-    while((oszto <= szam/2+1) && (szam % oszto != 0))
+    unsigned int gyok = sqrt(szam);
+    while((oszto <= gyok) && (szam % oszto != 0))
     {
         oszto += 2;
     }
 
-    if(oszto > szam/2+1)
+    if(oszto > gyok)
     {
         oszto = szam;
     }
