@@ -60,7 +60,8 @@ int main()
     {
         int diakok_szama;
         cin >> diakok_szama;
-        getchar(); //Elnyelni a new linet
+        string elnyelo;
+        getline(cin, elnyelo); //Elnyelni a new linet
         for (int j = 0; j < diakok_szama; j++)
         {
             string diak;
