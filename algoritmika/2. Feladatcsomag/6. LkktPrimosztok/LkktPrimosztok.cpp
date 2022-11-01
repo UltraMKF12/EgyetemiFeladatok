@@ -26,51 +26,50 @@ int stringbol_vektorba(string szamok, vector<unsigned long long> &vektor)
     return hossz;
 }
 
-int osszefesules(int hossz_elso, vector<unsigned long long> &vektor_elso, 
+
+int masolas(int hossz_elso, vector<unsigned long long> &vektor_elso, vector<unsigned long long> &vektor_masodik)
+{
+    int hossz_masodik = 0;
+    for (int i = 0; i < hossz_elso; i++)
+    {
+        vektor_masodik.push_back(vektor_elso[i]);
+        hossz_masodik++;
+    }
+
+    return hossz_masodik;
+}
+
+
+int egyesites(int hossz_elso, vector<unsigned long long> &vektor_elso, 
                  int hossz_masodik, vector<unsigned long long> &vektor_masodik,
                  vector<unsigned long long> &vektor_eredmeny)
 {
-    int index_elso = 0; // i
-    int index_masodik = 0; // j
-    int hossz_harmadik = 0; // db
-    
-    //Őrszemek
-    vektor_elso.push_back(vektor_masodik[hossz_masodik-1] + 1);
-    vektor_masodik.push_back(vektor_elso[hossz_elso-1] + 1);
+    int hossz_harmadik = masolas(hossz_elso, vektor_elso, vektor_eredmeny);
 
-    while((index_elso < hossz_elso) || (index_masodik < hossz_masodik))
-    {   
-        hossz_harmadik++;
-        if(vektor_elso[index_elso] < vektor_masodik[index_masodik])
+    for (int j = 0; j < hossz_masodik; j++)
+    {
+        int i = 0;
+        while((i < hossz_elso) && (vektor_elso[i] != vektor_masodik[j]))
         {
-            vektor_eredmeny.push_back(vektor_elso[index_elso]);
-            index_elso++;
+            i++;
         }
-        else if(vektor_elso[index_elso] == vektor_masodik[index_masodik])
+        if(i >= hossz_elso)
         {
-            vektor_eredmeny.push_back(vektor_elso[index_elso]);
-            index_elso++;
-            index_masodik++;
-        }
-        else
-        {
-            vektor_eredmeny.push_back(vektor_masodik[index_masodik]);
-            index_masodik++;
+            vektor_eredmeny.push_back(vektor_masodik[j]);
+            hossz_harmadik++;
         }
     }
-
+    
     return hossz_harmadik;
 }
 
 int main()
 {
-    freopen("bemenet.txt", "r", stdin);
-    freopen("kimenet.txt", "w", stdout);
+    // freopen("bemenet.txt", "r", stdin);
+    // freopen("kimenet.txt", "w", stdout);
 
-    // Megfigyelések:
-    // Két szám lkktjának primszám osztói a két szám primszám osztói.
-    // A számok sorrendben vannak. => Összefésülés, halmazt kell alkosson
 
+    //Beolvasas
     string string_elso, string_masodik;
     getline(cin, string_elso);
     getline(cin, string_masodik);
@@ -79,9 +78,13 @@ int main()
     int hossz_elso = stringbol_vektorba(string_elso, vektor_elso_osztok);
     int hossz_masodik = stringbol_vektorba(string_masodik, vektor_masodik_osztok);
 
-    vector<unsigned long long> vektor_eredmeny;
-    int hossz_eredmeny = osszefesules(hossz_elso, vektor_elso_osztok, hossz_masodik, vektor_masodik_osztok, vektor_eredmeny);
 
+    //Feladat megoldasa
+    vector<unsigned long long> vektor_eredmeny;
+    int hossz_eredmeny = egyesites(hossz_elso, vektor_elso_osztok, hossz_masodik, vektor_masodik_osztok, vektor_eredmeny);
+
+
+    //Kiiratas
     for (int i = 0; i < hossz_eredmeny; i++)
     {
         cout << vektor_eredmeny[i] << " ";
