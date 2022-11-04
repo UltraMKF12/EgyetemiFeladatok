@@ -1,0 +1,11 @@
+32-bites szám beolvasása a feladat.
+A programmal betudok olvasni egy számot, majd io könyvtárral kiirom, hogy tényleg jól olvastam e be.
+
+A program valamiért nem működik. EBX-ben felépítem a számot, majd a végén .end-nél beteszem EAX-be a számot, amit io könyvtár használ kiiratásra, de valamiért hibás az eredmény.
+
+Debug használata arra, hogy kijavitsam a hibát.
+
+EAX értéke 35 5 helyett.
+
+A hiba a debug használatával, az lehet, hogy az ascii értékét olvasom be a számnak.
+Megoldás, kivonni a 0-s értékét a számból, mielőtt hozzá adjuk az ebx-hez.

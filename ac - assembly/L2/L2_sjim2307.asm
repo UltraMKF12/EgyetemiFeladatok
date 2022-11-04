@@ -23,48 +23,85 @@ beolvas_decimal32:
     ;AX                         0000 0000 0000 0000 - FFFF
     ;EAX    0000 0000 0000 0000 0000 0000 0000 0000 - FFFF FFFF
     
+    ;A fügvény EAX-be olvassa be az értéket.
 
-    xor     ecx, ecx ;le kell nullázni az eax-et.
+    push    ebx ;Kell az ebx szam felepitesre
+    push    ecx ;Kell az ecx szorzo tarolasara, hogy ne mindig push / pop oljuk szorzaskor imullal
+    push    edx ;Osztás miatt
 
-.uj_karakter:
-    call    mio_readchar
+    xor     eax, eax ;Lenullánzi az eax jelenlegi értékét.
+    xor     ebx, ebx ;Ugyanugy az ebx is 0 kell legyen
+    mov     ecx, 10  ;szorzas miatt.
 
-    ;ENTER
-    cmp     al, 13
-    je      .end
+    .uj_karakter:
+        call    mio_readchar
 
-    ;Kiirni a beirt karaktert
-    call    mio_writechar
+        ;ENTER eseten véget ér a beolvasás
+        cmp     al, 13
+        je      .end
 
-    ;Leellenőrizni, hogy a beirt karakter szám.
-    ; 0 - karatker
-    cmp     al, 48
-    jl      .hiba
-    ; 9 - karatker
-    cmp     al, 57
-    jg      .hiba
+        ;Kiirni a beirt karaktert
+        call    mio_writechar
+        
+        ;Backspace eset lekezelese
+        cmp     al, 8
+        je      .backspace
 
-    ;Ha szam akkor szorozzuk a jelenlegit 10el es hozzaadjuk a beolvasottat
-    push    ebx
-    mov     ebx, 10
-    imul    ecx, ebx
-    pop     ebx
-    sub     al, 48 ;ascii -> int
-    add     cl, al
+        ;Leellenőrizni, hogy a beirt karakter szám.
+        ;Ha a beirt szám nem számjegy, akkor hiba lépett fel.
+        cmp     al, '0' ;48
+        jl      .hiba
+        cmp     al, '9' ;57
+        jg      .hiba
 
-    jmp     .uj_karakter
+        ;Ha szam akkor szorozzuk a jelenlegit 10el es hozzaadjuk a beolvasottat
+        imul    ebx, ecx ; ebx * 10
+        sub     eax, '0' ; Ki kell vonni a 0 karakter értékét, ezzel karakter kódból, számmá konvertáljuk.
+        add     ebx, eax ; eax-ban csak al értéke található, és ezért működni fog rendesen
 
+        jmp     .uj_karakter
+
+    .backspace:
+        ;Mivel a backspace karakter már ki volt irva, ezért felül kell irni egy üres karakterrel a jelenlegi dolgot,
+        ;Majd egy új backspace karakterrel helyére helyre tesszük a szöveg mutatót? a következő szám beírásnak.
+        mov     al, ' '
+        call    mio_writechar
+        mov     al, 8
+        call    mio_writechar
+
+        ;Osztani a szamot 10-el. Igy eltüntetjük a kitörölt számot. (pontosabban edx-be kerül)
+        ;EBX értékét kellene csökkenteni -> bemásoljuk és vissza eax-be.
+        mov     eax, ebx
+        cdq
+        idiv    ecx ; Osztjuk eax-et 10-el
+        mov     ebx, eax
+        xor     eax, eax
+
+        ;Uj karaktert kell bekerni.
+        jmp    .uj_karakter
 
     .hiba:
         ;ide hibakezelest
+
     .end:
+        ;Betesszük a számot eax-be.
+        mov     eax, ebx
+
+        ;Visszaszerezzük az értékekek stackből.
+        pop     edx
+        pop     ecx
+        pop     ebx
+
         ret
+
+
+
+
 
 
 
 main:
     call    beolvas_decimal32
     call    mio_writeln
-    mov     eax, ecx
     call    io_writeint
     ret
