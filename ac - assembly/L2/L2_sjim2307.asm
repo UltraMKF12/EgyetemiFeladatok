@@ -407,11 +407,11 @@ kiir_hexa:
     mov     ecx, 8                          ;8 karaktert kell beolvasni
 
     ;--KOMPLEMENTER ÁTALAKÍTÁS NEGATÍV SZÁMOK ESETÉN--
-    test    eax, eax
-    jns     .felbontas
+    ;test    eax, eax
+    ;jns     .felbontas
 
-    NOT     eax
-    inc     eax
+    ;NOT     eax
+    ;inc     eax
     ;--------------------------------------------------
 
     .felbontas:
@@ -462,17 +462,42 @@ kiir_hexa:
 
 
 main:
+    ;beolvas egy számot decimális egészként,
     call    beolvas_decimal32
     call    mio_writeln
 
+    ;kiíratja decimális (előjeles egész) alakban,
     call    kiir_decimal32
     call    mio_writeln
 
+    ;kiíratja hexadecimális (a szám komplementerkódbeli ábrázolása) alakban,
+    call    kiir_hexa
+    call    mio_writeln
+
+    ;beolvas egy másik számot hexadecimális egészként (ezt egy egész komplementerkódbeli ábrázolásának tekintjük),
+    mov     ebx, eax
     call    beolvas_hexa
     call    mio_writeln
 
+    ;kiíratja decimális (előjeles egész) alakban,
+    call    kiir_decimal32
+    call    mio_writeln
+
+    ;kiíratja hexadecimális alakban,
     call    kiir_hexa
-    
+    call    mio_writeln
+
+    ;a két számot összeadja,
+    add     eax, ebx
+
+    ;az eredményt kiíratja decimális (előjeles egész) alakban,
+    call    kiir_decimal32
+    call    mio_writeln
+
+    ;az eredményt kiíratja hexadecimális alakban.
+    call    kiir_hexa
+    call    mio_writeln
+
     ret
 
 
