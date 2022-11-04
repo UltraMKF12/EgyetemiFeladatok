@@ -183,6 +183,7 @@ kiir_decimal32:
     mov     ecx, 0 ; Számjegy számláló
 
 
+    ;Pozitív és negatív számokra egyaránt működik
     .szamjegy_lebontas:
         cdq
         idiv    ebx
@@ -194,12 +195,51 @@ kiir_decimal32:
         jne     .szamjegy_lebontas ; Addig ismételni ameddig a számjegy nem 0
 
 
-    .karakter_kiiras:
+    ;Meg kell szerezni a stack legfelső elemét, pop majd push-al nem rontjuk el a stack sorrendjét.
+    pop     eax
+    push    eax
+
+    ;Ha a szám negatív, akkor másként iratjuk ki
+    test    eax,eax
+    js      .negativ_szam
+
+
+    ;++++++++++++++
+    ;Pozitiv kiírás
+    ;++++++++++++++
+    .karakter_kiiras_pozitiv:
         pop     eax ; Kiszedni a stackben levő számjegyet
         add     eax, '0' ; A számjegyet karakter kóddá változtatni
         call    mio_writechar ; Kiiratni a számjegyet
 
-        loop    .karakter_kiiras ; Addig ismételni amennyi számjegy van
+        loop    .karakter_kiiras_pozitiv ; Addig ismételni amennyi számjegy van
+    
+
+    ;A kiírás végén .end-hez ugrunk.
+    jmp    .end 
+
+
+    ;--------------
+    ;Negatív kiírás
+    ;--------------
+    .negativ_szam:
+        ;Minusz jel kiírása
+        push    eax
+        mov     al, '-'
+        call    mio_writechar
+        pop     eax
+
+    .karakter_kiiras_negativ:
+        pop     eax ; Kiszedni a stackben levő számjegyet
+
+        ;Komplementer kódolás
+        NOT     eax
+        inc     eax
+
+        add     eax, '0' ; A számjegyet karakter kóddá változtatni
+        call    mio_writechar ; Kiiratni a számjegyet
+
+        loop    .karakter_kiiras_negativ ; Addig ismételni amennyi számjegy van
 
 
     .end:
@@ -215,9 +255,20 @@ kiir_decimal32:
 main:
     call    beolvas_decimal32
     call    mio_writeln
-    ;call    io_writeint
     call    kiir_decimal32
 
+    ;call    io_writebin
+    ;call    mio_writeln
+    ;call    mio_writeln
+
+    ;mov     ebx, 10
+    ;cdq
+    ;idiv    ebx
+    ;mov     eax, edx
+
+    ;call    io_writeint
+    ;call    mio_writeln
+    ;call    io_writebin
     ret
 
 
