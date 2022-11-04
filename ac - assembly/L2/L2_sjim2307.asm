@@ -36,6 +36,10 @@ beolvas_decimal32:
     push    ecx ;Kell az ecx szorzo tarolasara, hogy ne mindig push / pop oljuk szorzaskor imullal
     push    edx ;Itt tároljuk, hogy a szám negatív, vagy pozitív - 0 pozitív, 1 negatív
 
+    ;Kiiratni, hogy decimalis szamot varunk bemenetnek
+    mov     eax, str_decimalis_beolvasas
+    call    mio_writestr
+
     xor     eax, eax ;Lenullánzi az eax jelenlegi értékét.
     xor     ebx, ebx ;Ugyanugy az ebx is 0 kell legyen
     mov     ecx, 10  ;szorzas miatt.
@@ -136,7 +140,7 @@ beolvas_decimal32:
 
     .hiba:
         ;Hiba szöveg kiiratása
-        mov     eax, hiba
+        mov     eax, str_hiba
         call    mio_writeln
         call    mio_writestr
 
@@ -161,15 +165,65 @@ beolvas_decimal32:
 
 kiir_decimal32:
     ;A fügvény EAX-ből írja ki a számot.
+    
+    ;Szöveg kiírása
+    push    eax
+    mov     eax, str_decimalis_kiiras
+    call    mio_writestr
+    pop     eax
+
+    ;Értékek elmentése
+    push    eax ; Az eax értéke ne változzon a fügvény végére.
+    push    ebx ; ebx-el osztunk meg maradekot szamolunk
+    push    ecx ; Szamjegy szamlalo
+    push    edx ; Ide kerül majd számjegyenként az eax
+
+    ;Regiszterek beállítása
+    mov     ebx, 10 ; Osztó
+    mov     ecx, 0 ; Számjegy számláló
+
+
+    .szamjegy_lebontas:
+        cdq
+        idiv    ebx
+        push    edx ; A maradekot betenni a stackbe, hogy jó legyen a beolvasás
+
+        inc     ecx ; Növelni a számjegyek számát.
+
+        cmp     eax, 0
+        jne     .szamjegy_lebontas ; Addig ismételni ameddig a számjegy nem 0
+
+
+    .karakter_kiiras:
+        pop     eax ; Kiszedni a stackben levő számjegyet
+        add     eax, '0' ; A számjegyet karakter kóddá változtatni
+        call    mio_writechar ; Kiiratni a számjegyet
+
+        loop    .karakter_kiiras ; Addig ismételni amennyi számjegy van
+
+
+    .end:
+        ;Visszaszerezzük az értékekek stackből.
+        pop     edx
+        pop     ecx
+        pop     ebx
+        pop     eax
+
+        ret
 
 
 main:
     call    beolvas_decimal32
     call    mio_writeln
+    ;call    io_writeint
     call    kiir_decimal32
 
     ret
 
 
 section .data
-    hiba  db "Hiba: Helytelen bemenet! Uj bemenet: ", 0
+    str_hiba  db "Hiba: Helytelen bemenet! Uj bemenet >> ", 0
+    str_decimalis_beolvasas  db "[Beolvasas]Decimalis (32bit) >> ", 0
+    str_decimalis_kiiras db "[Kiiras]Decimalis (32bit) = ", 0
+    str_hexa_beolvasas  db "[Beolvasas]Hexa (32bit) >> ", 0
+    str_hexa_kiiras db "[Kiiras]Hexa (32bit) = ", 0
