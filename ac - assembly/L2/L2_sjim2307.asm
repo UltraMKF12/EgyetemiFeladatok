@@ -279,36 +279,44 @@ kiir_hexa:
 
     mov     ecx, 8                          ;8 karaktert kell beolvasni
 
-    ;;;KOMPLEMENTER ATALAKITAS NEGATIV SZAMOK ESETÉN
+    ;--KOMPLEMENTER ÁTALAKÍTÁS NEGATÍV SZÁMOK ESETÉN--
+    test    eax, eax
+    jns     .felbontas
 
-    .beolvasas:
-        mov     ebx, F                      ;.... 0000 1111
+    NOT     eax
+    inc     eax
+    ;--------------------------------------------------
+
+    .felbontas:
+        mov     ebx, 0xF                    ;.... 0000 1111
         and     ebx, eax                    ;Megszerezzük a számot az utolsó 4 bitről.
         push    ebx                         ;Elmentjük a számot
 
         shr     eax, 4                      ;Eltoljuk 4-el az eax-et, hogy megkapjuk a következő számot
-        loop    .beolvasas
+        loop    .felbontas
 
 
     mov     ecx, 8                          ;8 karaktert kell kiírni
     .kiiras:
         pop     eax                         ;Kiszedjük a számot a stackből.
 
-        ;Ha ebx <= 10(1010) akkor számjegyről van szó.
-        cmp     eax, 10
-        jle     .szamjegy
-
-        ;Ellenkező esetben betűről
-        jmp     .betu
+        cmp     eax, 10                     
+        jl      .szamjegy                   ;Ha ebx < 10(1010) akkor számjegyről van szó.
+        jmp     .betu                       ;Ellenkező esetben betűről
 
 
     .szamjegy:
-        add     eax, '0'                    ; Számjegy ASCII kóddá
+        add     eax, '0'                    ; Számjegy ASCII kóddá alakítása
+        call    mio_writechar
 
         jmp     .kiiras_veg
     
 
     .betu:
+        sub     eax, 10                     ;Ahhoz, hogy A-F karaktert kapjunk, ki kell vonni 10-et. A=10
+        add     eax, 'A'
+        call    mio_writechar
+
         jmp     .kiiras_veg
 
 
