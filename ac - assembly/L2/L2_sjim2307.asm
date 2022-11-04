@@ -36,29 +36,36 @@ beolvas_decimal32:
     .uj_karakter:
         call    mio_readchar
 
-        ;ENTER eseten véget ér a beolvasás
+        ;ENTER - eseten véget ér a beolvasás
         cmp     al, 13
         je      .end
 
-        ;Kiirni a beirt karaktert
+        ;Karakter kiiratasa
         call    mio_writechar
         
-        ;Backspace eset lekezelese
+        ;BACKSPACE
         cmp     al, 8
         je      .backspace
 
-        ;Leellenőrizni, hogy a beirt karakter szám.
-        ;Ha a beirt szám nem számjegy, akkor hiba lépett fel.
+        ;Leellenőrizni, hogy a karakter szám
         cmp     al, '0' ;48
         jl      .hiba
         cmp     al, '9' ;57
         jg      .hiba
 
-        ;Ha szam akkor szorozzuk a jelenlegit 10el es hozzaadjuk a beolvasottat
+        ;Szám esetén:
+        ;Szorozzuk az eredményt 10-el majd hozzáadjuk az beolvasott számjegyet.
         imul    ebx, ecx ; ebx * 10
-        sub     eax, '0' ; Ki kell vonni a 0 karakter értékét, ezzel karakter kódból, számmá konvertáljuk.
+
+        jo      .hiba ; Ha a szorzás következtében overflow jön létre, akkor hiba üzenetet kell megjeleníteni.
+
+        sub     eax, '0' ; Ki kell vonni a 0 karakter értékét, ezzel karakter kódból számmá konvertáljuk.
         add     ebx, eax ; eax-ban csak al értéke található, és ezért működni fog rendesen
 
+        jo      .hiba ; Ha a szorzás pont nem okozott overflow, lehet az összedás fog. Ezt is le kell kezelni.
+
+
+        ;Ha minden rendben van, folytatjuk a beolvasást.
         jmp     .uj_karakter
 
     .backspace:
@@ -81,7 +88,15 @@ beolvas_decimal32:
         jmp    .uj_karakter
 
     .hiba:
-        ;ide hibakezelest
+        ;Hiba szöveg kiiratása
+        mov     eax, hiba
+        call    mio_writeln
+        call    mio_writestr
+
+        ;Ujrakezdjük a beolvasást
+        xor     eax, eax
+        xor     ebx, ebx
+        jmp     .uj_karakter
 
     .end:
         ;Betesszük a számot eax-be.
@@ -96,12 +111,13 @@ beolvas_decimal32:
 
 
 
-
-
-
-
 main:
     call    beolvas_decimal32
     call    mio_writeln
     call    io_writeint
+
     ret
+
+
+section .data
+    hiba  db "Hiba: Helytelen bemenet!", 0
