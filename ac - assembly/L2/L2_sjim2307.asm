@@ -9,11 +9,10 @@
 
 ; Compile:
 ; nasm -f win32 L2\L2_sjim2307.asm
-; nlink L2\L2_sjim2307.obj -lmio -lio -o L2\L2_sjim2307.exe
+; nlink L2\L2_sjim2307.obj -lmio -o L2\L2_sjim2307.exe
 ; actest L2 L2\L2_sjim2307.exe
 
 %include 'mio.inc'
-%include 'io.inc'
 
 global main
 
