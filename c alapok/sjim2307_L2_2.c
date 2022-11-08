@@ -2,6 +2,7 @@
 // sjim2307
 
 #include <stdio.h>
+#include <stdlib.h>
 
 int kiszamitSzovegHossz(int maxHossz, char * szoveg)
 {
@@ -62,7 +63,15 @@ void beolvasas(char *imei)
 {
     FILE *f = fopen("input.txt", "r");
     
-    fgets(imei, 100, f);
+    if(f == NULL)
+    {
+        FILE *f2 = fopen("output.txt", "w");
+        fprintf(f2, "Hiba");
+        fclose(f2);
+        exit(0);
+    }
+
+    fgets(imei, 20, f); // Fgets automatikusan leall EOF, \n, vagy 20 karakter beolvasas utan. Tudjuk, hogy kb 17 karakter kell nekunk, meg van hatarozva, ezert 20 karaktert olvasunk be hogy leellenorizzuk, hogy tobb van e mint kellene.
 
     fclose(f);
 }
@@ -71,7 +80,7 @@ int ellenorzes(char * imei)
 {
     // Az input 8 - 2 - stb formatumban van, ami azt jelenti csak az utolso tagoals valtozhat.
     // Ha a beolvasott szoveg hossza 15 + 2 space karakter = 17 karakter, akkor helyes.
-    if(kiszamitSzovegHossz(100, imei) == 17)
+    if(kiszamitSzovegHossz(20, imei) == 17)
     {
         return 1;
     }
@@ -167,7 +176,7 @@ void kiiras(int ervenyesseg, int kod)
 
 int main()
 {   
-    char imei[100];
+    char imei[20]; // 12+ karakter lehet a sor. 17 karakter amennyit kapni akarunk. Lehet tobbet kapunk es annak is kell helyet foglalni (de 20 nal tobb hely felesleges).
     beolvasas(imei);
     if(ellenorzes(imei))
     {
@@ -176,7 +185,7 @@ int main()
     }
     else
     {
-        printf("Helytelen IMEI szam formatum!");
+        kiiras(0, 123); // 0 - jelzi, hogy ervenytelen a kod. 123 - random kod (nem kerul leellenorzesre)
     }
 
     return 0;
