@@ -2,16 +2,20 @@
 ; 514/2
 
 ; Labor: 3
-; Feladat: a
+; Feladat: b8
 
-;Írjunk assembly eljárást (NASM), amely egy 32 bites, 
-;előjel nélküli egész számot ír ki a képernyőre bináris formában, 
-;kötelezően mindig 32 bináris számjegy formájában.
+;Keszítsünk assembly programot (NASM), amely beolvas három előjel nélküli egész számot 
+;(használjuk a hexa olvasás függvényt) 32 bites egészként, kiírja a felhasznált szabályt, 
+;mint üzenetet, és a beolvasott értékeket, mint 32 bites bináris egészeket, külön soronként, 
+;majd előállítja és végül kiírja bináris formában a művelet eredményét, 
+;ami szintén egy 32 bites egész szám.
+
+;8. A[8:7] OR 01, A[7:5] AND 010, 1, B[11:11] AND A[23:23], A[26:6], B[12:9] + A[31:28]
 
 ; Compile:
-; nasm -f win32 L3\L3a_sjim2307.asm
-; nlink L3\L3a_sjim2307.obj -lmio -o L3\L3a_sjim2307.exe
-; actest L3a L3\L3a_sjim2307.exe
+; nasm -f win32 L3\L3b_8_sjim2307.asm
+; nlink L3\L3b_8_sjim2307.obj -lmio -o L3\L3b_8_sjim2307.exe
+; actest L3b_8 L3\L3b_8_sjim2307.exe
 
 %include 'mio.inc'
 
@@ -25,10 +29,10 @@ writebin:
     ;Alternativkén lehetne használni ADC-t osztály helyett
 
     ;Szöveg kiírása
-    push    eax
-    mov     eax, str_binaris_kiiras
-    call    mio_writestr
-    pop     eax
+    ;push    eax
+    ;mov     eax, str_binaris_kiiras
+    ;call    mio_writestr
+    ;pop     eax
 
 
     push    eax                                     ;Itt van a szam
@@ -212,26 +216,109 @@ beolvas_hexa:
 
 
 main:
+    ;Számok beolvasása
     call    beolvas_hexa
     call    mio_writeln
-    mov     ebx, eax                                ;Első szám elemntése ebx-ben
+    mov     [a], eax
+    
     call    beolvas_hexa
     call    mio_writeln
-    mov     ecx, eax                                ;Második szám elmentése ecx-ben
+    mov     [b], eax
 
-    mov     eax, ebx
+    call    beolvas_hexa
+    call    mio_writeln
+    mov     [c], eax
+
+    
+    ;Szabály és számok kiiratása
+    call    mio_writeln
+    mov     eax, str_szabaly
+    call    mio_writestr
+    call    mio_writeln
+
+    mov     eax, str_a
+    call    mio_writestr
+    mov     eax, [a]
     call    writebin
     call    mio_writeln
 
-    mov     eax, ecx
+    mov     eax, str_b
+    call    mio_writestr
+    mov     eax, [b]
     call    writebin
     call    mio_writeln
+
+    mov     eax, str_c
+    call    mio_writestr
+    mov     eax, [c]
+    call    writebin
+    call    mio_writeln
+
+    ;A[8:7] OR 01, A[7:5] AND 010, 1, B[11:11] AND A[23:23], A[26:6], B[12:9] + A[31:28]
+    xor     edx, edx                        ;Itt tároljuk az eredményt
+
+    ;A[8:7] OR 01  //  31,30 bit
+    mov     eax, [a]
+    shr     eax, 7
+    AND     eax, 11b
+    OR      eax, 01b
+    shl     eax, 30
+    add     edx, eax
+
+    ;A[7:5] AND 010  //  29-27 bit
+    mov     eax, [a]
+    shr     eax, 5
+    AND     eax, 010b
+    shl     eax, 27
+    add     edx, eax
+
+    ;1  //  26 bit
+    mov     eax, 1
+    shl     eax, 26
+    add     edx, eax
+
+    ;B[11:11] AND A[23:23]  //  25 bit
+    mov     eax, [a]
+    mov     ebx, [b]
+    shr     eax, 23
+    shr     ebx, 11
+    AND     eax, 1b                              ;Megkapni az utolsó bitet
+    AND     ebx, 1b
+    AND     eax, ebx
+    shl     eax, 25
+    add     edx, eax
+
+    ;A[26:6]  //  24-4 bit
+    mov     eax, [a]
+    shl     eax, 5
+    shr     eax, 11
+    shl     eax, 4
+    add     edx, eax
+
+    ;B[12:9] + A[31:28]  //  4-0 bit
+    mov     ebx, [b]
+    shr     ebx, 9
+    AND     ebx, 1111b
+
+    mov     eax, [a]
+    shr     eax, 28
+    AND     ebx, 1111b
 
     add     eax, ebx
-    call    writebin
-    
-    ret
+    AND     eax, 1111b
 
+    add     edx, eax
+
+
+    ;Eredmeny kiiratas
+    call    mio_writeln
+    mov     eax, str_eredmeny
+    call    mio_writestr
+    mov     eax, edx
+    call    writebin
+    call    mio_writeln
+
+    ret
 
 
 section .data
@@ -239,3 +326,11 @@ section .data
     str_hexa_beolvasas  db "[Beolvasas]Hexa (32bit) >> ", 0
     str_hexa_prefix db "0x", 0
     str_hiba  db "Hiba: Helytelen bemenet! Probald Ujra!", 0
+    str_szabaly db "Szabaly: A[8:7] OR 01, A[7:5] AND 010, 1, B[11:11] AND A[23:23], A[26:6], B[12:9] + A[31:28]", 0
+    str_a db "A = ", 0
+    str_b db "B = ", 0
+    str_c db "C = ", 0
+    str_eredmeny db "D = ", 0
+    a           dd 0
+    b           dd 0
+    c           dd 0
