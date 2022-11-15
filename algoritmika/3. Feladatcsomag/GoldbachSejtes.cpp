@@ -10,39 +10,29 @@ prímszám összegeként (Goldbach-sejtés).
 #include <math.h>
 using namespace std;
 
-vector<bool> prim_szita_generator(unsigned int szam)
+bool prim_e(unsigned long szam)
 {
-    //Legeneralja az osszes primszamot szam-ig
-    vector<bool> primszamok(szam+1, true);
-    primszamok[0] = false;
-    primszamok[1] = false;
-
-    unsigned int szam_gyok = sqrt(szam);
-    for (unsigned int i = 2; i <= szam_gyok; i++)
+    if(szam <= 1)
     {
-        if(primszamok[i])
+        return false;
+    }
+    else if(szam % 2 == 0)
+    {
+        return (szam == 2);
+    }
+    else
+    {
+        unsigned long gyok = sqrt(szam);
+        for (unsigned long i = 3; i <= gyok; i += 2)
         {
-            for (int j = i*i; j <= szam; j += i)
+            if(szam % i == 0)
             {
-                primszamok[j] = false;
+                return false;
             }
-            
         }
     }
-    
-    return primszamok;
-}
 
-void szita_primekbe(vector<bool> szita, vector<unsigned int> &vektor)
-{
-    int szita_hossz = szita.size();
-    for (int i = 0; i < szita_hossz; i++)
-    {
-        if(szita[i])
-        {
-            vektor.push_back(i);
-        }
-    }
+    return true;
 }
 
 int main()
@@ -51,30 +41,22 @@ int main()
     // freopen("kimenet.txt", "w", stdout);
 
     //Beolvasas
-    unsigned int szam;
+    unsigned long szam;
     cin >> szam;
 
-    //Primszamok legeneralasa
-    vector<unsigned int> primek;
-    szita_primekbe(prim_szita_generator(szam), primek);
+    //Golbach sejtes
+    unsigned long prim1, prim2;
 
-    //Kivalasztani a primeket
-    unsigned int szam1, szam2;
-    int primek_hossz = primek.size();
-    for(int i = 1; i < primek_hossz-1; i++) // X garantaltan paros, ezert nem kell a 2-es primszam
+    for (unsigned long i = 3; i <= szam/2; i+=2) // Mivel a szám mindig páros, ezért nem kell 2-re tesztelni.
     {
-        for (int j = i+1; j < primek_hossz; j++)
+        prim1 = i;
+        prim2 = szam - prim1;
+        if(prim_e(prim1) && prim_e(prim2))
         {
-            if(primek[i] + primek[j] == szam)
-            {
-                szam1 = primek[i];
-                szam2 = primek[j];
-                break;
-            }
+            break; //Megkaptuk a két prím számot aminek összege egyenlő a számmal.
         }
-        
     }
-
-    cout << szam << " = " << szam1 << " + " << szam2;
+    
+    cout << szam << " = " << prim1 << " + " << prim2;
     return 0;
 }

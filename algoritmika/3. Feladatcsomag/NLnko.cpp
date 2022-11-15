@@ -32,8 +32,8 @@ unsigned long long lnko(unsigned long long szam1, unsigned long long szam2)
 
 int main()
 {
-    // freopen("bemenet.txt", "r", stdin);
-    // freopen("kimenet.txt", "w", stdout);
+    freopen("bemenet.txt", "r", stdin);
+    freopen("kimenet.txt", "w", stdout);
 
     int darabszam;
     cin >> darabszam;

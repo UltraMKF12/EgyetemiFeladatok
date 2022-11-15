@@ -6,6 +6,7 @@ A Fibonacci-sorozat nulladik elemét nem kell figyelembe venni.
 */
 
 #include <iostream> 
+#include <limits.h>
 using namespace std;
 
 int fibonacci_nagyobb(unsigned long long szam)
@@ -16,9 +17,15 @@ int fibonacci_nagyobb(unsigned long long szam)
     while(szam > masodik)
     {
         darab++;
-        // Kiszamitani a kovetkezo elemet, es kicserelni a regieket
-        int temp = elso;
+        unsigned long long temp = elso;
         elso = masodik;
+
+        //Overflow check
+        if(masodik > ULLONG_MAX - temp)
+        {
+            break;
+        }
+
         masodik = masodik + temp;
     }
 

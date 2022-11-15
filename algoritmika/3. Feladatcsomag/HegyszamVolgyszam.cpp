@@ -7,9 +7,9 @@ Döntsük el egy adott számról, hogy völgyszám-e vagy hegyszám.
 #include <iostream> 
 using namespace std;
 
-int szamjegy_megforditas(int szam)
+unsigned long long szamjegy_megforditas(unsigned long long szam)
 {
-    int uj_szam = 0;
+    unsigned long long uj_szam = 0;
     while(szam > 0)
     {
         uj_szam += szam % 10;
@@ -21,71 +21,106 @@ int szamjegy_megforditas(int szam)
     return uj_szam;
 }
 
-bool hullamzik_e(int szam, bool felfele_tipp, int keresett_hullamzas)
+unsigned long long levag_noveked_csokken(unsigned long long szam, bool novekszik)
 {
-    int hullamok_szama = 0;
+    //Addig vagunk le a szám elejéből ameddig növekszik vagy csökken a szám
+    //Ha teljesen levágtuk a számot 0-t térítünk vissza, különben a számot amiből annyit vágtunk le amennyit tudtunk, hibás szám esetén -1-et
 
-    if(szam < 100) // 100 nal kisebb nem hullamzanak.
+    if(szam <= 0)
     {
-        return false;
+        return -1; // Ha a szám 0 vagy kisebb, akkor érvénytelen.
     }
 
-    int elozo_szamjegy = szam % 10;
-    szam /= 10;
+    unsigned long long jelenlegi_szam, kovetkezo_szam;
+    unsigned long long szam_masolat = szam;
 
-    // Kiszámítjuk, hogy felfele mennek a számok vagy lefele. Ha ez nem egyezik a tippel, akkor nem nézzük tovább.
-    // Szóval direkt meglehet adni, hogy hegy vagy völgyet várunk el a számtól.
-    bool felfele = szam%10 > elozo_szamjegy;
-    if(felfele != felfele_tipp)
+    while(szam_masolat > 9)
     {
-        return false;
-    }
-
-    while((szam > 0))
-    {
-        int szamjegy = szam % 10;
-        szam /= 10;
-        if(hullamok_szama <= keresett_hullamzas)
+        jelenlegi_szam = szam_masolat % 10;
+        kovetkezo_szam = (szam_masolat/10) % 10;
+        if(novekszik && (kovetkezo_szam <= jelenlegi_szam))
         {
-            if(felfele)
-            {
-                if(szamjegy < elozo_szamjegy)
-                {
-                    felfele = false;
-                    hullamok_szama++;
-                }
-            }
-            else
-            {
-                if(szamjegy > elozo_szamjegy)
-                {
-                    felfele = true;
-                    hullamok_szama++;
-                }
-            }
+            return szam_masolat;
+        }
+        else if(!novekszik && (kovetkezo_szam >= jelenlegi_szam))
+        {
+            return szam_masolat;
         }
 
-        elozo_szamjegy = szamjegy;
+        szam_masolat /= 10;
     }
 
-    return (hullamok_szama == keresett_hullamzas);
+    return 0;
 }
 
-string hegyszam_volgyszam(int szam)
+bool hegyszam_e(unsigned long long szam)
 {
-    if(hullamzik_e(szam, true, 1))
+    if(szam < 100)
+    {
+        return false;
+    }
+
+    // A hegyszám nő, majd csökken
+    unsigned long long levagas_eredmeny;
+    levagas_eredmeny = levag_noveked_csokken(szam, true);
+    if(levagas_eredmeny == szam)
+    {
+        return false; // Ha az első levágással nem lett semmi levágva, akkor a szám egy irányú
+    }
+
+    levagas_eredmeny = levag_noveked_csokken(levagas_eredmeny, false);
+
+    // Ha a végén nem marad szám, akkor hegyszám.
+    if(levagas_eredmeny == 0)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool volgyszam_e(unsigned long long szam)
+{
+    if(szam < 100)
+    {
+        return false;
+    }
+
+    // A völgyszám csökken, majd nő
+    unsigned long long levagas_eredmeny;
+
+    levagas_eredmeny = levag_noveked_csokken(szam, false);
+    if(levagas_eredmeny == szam)
+    {
+        return false; // Ha az első levágással nem lett semmi levágva, akkor a szám egy irányú
+    }
+
+    levagas_eredmeny = levag_noveked_csokken(levagas_eredmeny, true);
+
+    // Ha a végén nem marad szám, akkor hegyszám.
+    if(levagas_eredmeny == 0)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+string hegyszam_volgyszam(unsigned long long szam)
+{
+    if(hegyszam_e(szam))
     {
         return "hegyszam";
     }
-    else if(hullamzik_e(szam, false, 1))
+    else if(volgyszam_e(szam))
     {
         return "volgyszam";
     }
 
-    while(szam > 0)
+    while(szam > 1000)
     {
         szam /= 10;
-        if (hullamzik_e(szam, true, 1) || hullamzik_e(szam, false, 1))
+        if (hegyszam_e(szam) || volgyszam_e(szam))
         {
             return to_string(szamjegy_megforditas(szam));
         }
@@ -100,9 +135,9 @@ int main()
     // freopen("bemenet.txt", "r", stdin);
     // freopen("kimenet.txt", "w", stdout);
 
-    int szam;
+    unsigned long long szam;
     cin >> szam;
-    szam = szamjegy_megforditas(szam); // Igy könnyebb megkapni az "elso" szamjegyet
+    szam = szamjegy_megforditas(szam); // Igy könnyebb levágni a szám elején lévő karaktereket
     cout << hegyszam_volgyszam(szam);
 
     return 0;
