@@ -35,7 +35,7 @@ int main()
         string file_name;
         getline(cin, file_name);
 
-        string full_path = folder_name + "\\" + to_string(i) + ". " + file_name + ".cpp";
+        string full_path = folder_name + "\\" + file_name + ".cpp";
 
         freopen(full_path.c_str(), "a", stdout);
         cout << first_line;

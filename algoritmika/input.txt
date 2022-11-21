@@ -1,11 +1,11 @@
-3. Feladatcsomag
-HegyszamVolgyszam
-NLnko
-KisebbFibo
-GoldbachSejtes
-RomaibolArabba
-ArabbolRomaiba
-KettoHatvanyok
-TorzstenyezokreBontas
-LegtobbOszto
-SzamjegyStatisztika
+4. Feladatcsomag
+KoktelRendezes
+MinRendezes
+BeszuroRendezes
+CountSort
+SzamjegyesRendezes
+TorzstenyezokRek
+PolinomRek
+TizenhatosRek
+OroszRek
+GyokvonasRek
