@@ -89,6 +89,45 @@ writeStr:
         ret
 
 
+sort_ABC:
+    push    eax
+    push    ebx
+    push    ecx
+    push    edx
+
+    xor     ebx, ebx
+    xor     ecx, ecx
+    xor     edx, edx
+
+    .count_characters:
+        mov     bl, [eax+ecx]
+        cmp     bl, 0
+        je      .abc_sort
+
+        inc     ecx
+
+    .abc_sort_outside:
+        ; ecx - max pozicio
+        ; edx - jelenlegi pozicio
+        ; Felcseleseses rendezes (Mókás megírni assemblyben)
+
+        cmp     ecx, edx                                ;Ha az edx elérte az ecx-et, vége a rendezésnek
+        jge      .end
+
+        mov     bl, [eax, + edx]                        ;bl - jelenlegi szám amit cserélünk.
+        push    edx                                     ;Le kell menteni az indexet, ahol vagyunk (i)
+        .abc_sort_inside:
+            inc     edx                                 ;Ez lesz a (j)
+            ;
+        .abc_sort_inside_end:
+
+    .end:
+        pop     edx
+        pop     ecx
+        pop     ebx
+        pop     eax
+
+
 main:
     ;Feladat
     mov     eax, str_a
