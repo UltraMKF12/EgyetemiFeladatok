@@ -9,12 +9,14 @@ felhasználva a következő sorozatot, melyről tudjuk, hogy √𝑎-hoz konverg
 #include <iomanip>
 using namespace std;
 
-double gyokvonas_rek(unsigned long long szam, double x)
+double gyokvonas_rek(unsigned long long szam, int n)
 {
-    if(x == 0)
+    if(n == 0)
     {
         return szam;
     }
+
+    return (gyokvonas_rek(szam, n-1) + (szam/gyokvonas_rek(szam, n-1)))/2;
 }
 
 int main()
@@ -24,7 +26,7 @@ int main()
     unsigned long long a;
     cin >> a;
 
-    double gyok = gyokvonas_rek(a, a);
+    double gyok = gyokvonas_rek(a, 10);
 
     cout << fixed << setprecision(6) << gyok;
     return 0;
