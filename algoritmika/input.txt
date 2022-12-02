@@ -1,11 +1,11 @@
-4. Feladatcsomag
-KoktelRendezes
-MinRendezes
-BeszuroRendezes
-CountSort
-SzamjegyesRendezes
-TorzstenyezokRek
-PolinomRek
-TizenhatosRek
-OroszRek
-GyokvonasRek
+5. Feladatcsomag
+mpq
+Kiralynok
+Muveletek
+Torony
+PalindromGeneralas
+HuszarFutar
+LaciKonyve
+ABCLefedes
+MindenTavolsag
+Dijazas
