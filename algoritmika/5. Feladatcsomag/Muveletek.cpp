@@ -49,12 +49,12 @@ void kiir(const vector<int> &szamok, const vector<char> &jelenlegi_jelek, int er
     {
         cout << szamok[i] << jelenlegi_jelek[i];
     }
-    cout << szamok[hossz];
+    cout << szamok[hossz] << endl;
 }
 
-void muveletek(int n, const vector<int> &szamok, vector<char> &jelenlegi_jelek, const vector<char> &jelek, int eredmeny, int melyseg, int jelenlegi_eredmeny, int &darab)
+void muveletek(int n, int eredmeny, const vector<int> &szamok, const vector<char> &jelek, int melyseg, vector<char> &jelenlegi_jelek, int jelenlegi_eredmeny, int &darab)
 {
-    if(melyseg > n-1)
+    if(melyseg >= n-1)
     {
         if(eredmeny == jelenlegi_eredmeny)
         {
@@ -68,7 +68,8 @@ void muveletek(int n, const vector<int> &szamok, vector<char> &jelenlegi_jelek, 
         {
             char jel = jelek[i];
             jelenlegi_jelek[melyseg] = jel;
-            
+            int uj_eredmeny = jel_konverzio(jelenlegi_eredmeny, szamok[melyseg+1], jel);
+            muveletek(n, eredmeny, szamok, jelek, melyseg+1, jelenlegi_jelek, uj_eredmeny, darab);
         }
         
     }
@@ -76,7 +77,7 @@ void muveletek(int n, const vector<int> &szamok, vector<char> &jelenlegi_jelek, 
 
 int main()
 {
-    freopen("bemenet.txt", "r", stdin);
+    // freopen("bemenet.txt", "r", stdin);
     // freopen("kimenet.txt", "w", stdout);
 
     int n, eredmeny;
@@ -86,7 +87,7 @@ int main()
     vector<char> jelek = {'+', '-', '*', '/'};
     vector<char> jelenlegi_jelek(n-1, ' ');
     int darab = 0;
-    muveletek(n, szamok, jelenlegi_jelek, jelek, eredmeny, 0, 0, darab);
+    muveletek(n, eredmeny, szamok, jelek, 0, jelenlegi_jelek, szamok[0], darab);
 
     if(darab == 0)
     {
