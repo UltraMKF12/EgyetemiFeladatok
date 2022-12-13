@@ -9,6 +9,7 @@ sorrendet tekintve.
 
 #include <iostream>
 #include <vector>
+#include <climits>
 using namespace std;
 
 void beolvasas(int &n, int &q, vector<int> &sorrendek)
@@ -20,66 +21,6 @@ void beolvasas(int &n, int &q, vector<int> &sorrendek)
     {
         cin >> sorrendek[i];
     }
-}
-
-void kiralyno_helyfoglalas(vector<vector<int>> &tabla, int n, int pos_x, int pos_y)
-{
-    //Vertical
-    for (int i = 0; i < n; i++)
-    {
-        tabla[i][pos_y] = 1;
-    }
-
-    //Horizontal
-    for (int i = 0; i < n; i++)
-    {
-        tabla[pos_x][i] = 1;
-    }
-    
-    int x = 0;
-    int y = 0;
-
-    //Left-up
-    x = pos_x;
-    y = pos_y;
-    while(x >= 0 && y >= 0)
-    {
-        tabla[x][y] = 1;
-        x--;
-        y--;
-    }
-
-    //Left-down
-    x = pos_x;
-    y = pos_y;
-    while(x >= 0 && y < n)
-    {
-        tabla[x][y] = 1;
-        x--;
-        y++;
-    }
-
-    //Right-up
-    x = pos_x;
-    y = pos_y;
-    while(x < n && y >= 0)
-    {
-        tabla[x][y] = 1;
-        x++;
-        y--;
-    }
-
-    //Right-down
-    x = pos_x;
-    y = pos_y;
-    while(x < n && y < n)
-    {
-        tabla[x][y] = 1;
-        x++;
-        y++;
-    }
-    
-    tabla[pos_x][pos_y] = 2;
 }
 
 void kiralyno_kiir(const vector<vector<int>> &tabla, int n)
@@ -116,28 +57,49 @@ bool bennevan_e(const vector<int> &tomb, int elem)
     return false;
 }
 
-void kiralynok(const vector<vector<int>> &tabla, int n, int melyseg, int &q, vector<int> &sorrendek, int &jelenlegi)
+void kiirat_sorrend_alapjan(vector<vector<vector<int>>> keresett_tablak, const vector<int> &sorrendek, int n, const vector<int> &keresett_tabla_sorrend_hely)
+{   
+    for (int i = 0; i < sorrendek.size(); i++)
+    {
+        for (int j = 0; j < keresett_tabla_sorrend_hely.size(); j++)
+        {
+            if(sorrendek[i] == keresett_tabla_sorrend_hely[j])
+            {
+                kiralyno_kiir(keresett_tablak[j], n);
+                break;
+            }
+        }
+    }
+}
+
+void kiralynok(vector<vector<int>> &tabla, vector<bool> &oszlop, vector<bool> &fo_atlo, vector<bool> &mellek_atlo, int n, int melyseg, int &q, const vector<int> &sorrendek, int &jelenlegi, vector<vector<vector<int>>> &keresett_tablak, vector<int> &keresett_tabla_sorrend_hely)
 {   
     if(melyseg == n)
     {   
         //Kiiratas
         if(q > 0 && bennevan_e(sorrendek, jelenlegi))
         {   
-            kiralyno_kiir(tabla, n);
+            keresett_tablak.push_back(vector<vector<int>>(tabla));
+            keresett_tabla_sorrend_hely.push_back(jelenlegi);
             q--;
         }
         jelenlegi++;
     }
     else
     {   
-        //Megnézi a mélység sorban, hogy betudja helyezni e a királynőt.
         for (int i = 0; i < n; i++)
         {
-            if(tabla[melyseg][i] == 0)
-            {
-                vector<vector<int>> uj_tabla(tabla);
-                kiralyno_helyfoglalas(uj_tabla, n, melyseg, i);
-                kiralynok(uj_tabla, n, melyseg+1, q, sorrendek, jelenlegi);
+            if(oszlop[i] == 0 && fo_atlo[melyseg-i+n-1] == 0 && mellek_atlo[i+melyseg] == 0)
+            {   
+                oszlop[i] = true;
+                fo_atlo[melyseg-i+n-1] = true;
+                mellek_atlo[i+melyseg] = true;
+                tabla[melyseg][i] = 2;
+                kiralynok(tabla, oszlop, fo_atlo, mellek_atlo, n, melyseg+1, q, sorrendek, jelenlegi, keresett_tablak, keresett_tabla_sorrend_hely);
+                oszlop[i] = false;
+                fo_atlo[melyseg-i+n-1] = false;
+                mellek_atlo[i+melyseg] = false;
+                tabla[melyseg][i] = 0;
             }
         }
     }
@@ -153,8 +115,16 @@ int main()
     beolvasas(n, q, sorrendek);
 
     vector<vector<int>> tabla(n, vector<int>(n, 0));
+    vector<bool> oszlop(n, false);
+    vector<bool> fo_atlo(2*n, false);
+    vector<bool> mellek_atlo(2*n, false);
+
+    vector<vector<vector<int>>> keresett_tablak;
+    vector<int> keresett_tabla_sorrend_hely;
+
     int jelenlegi = 1;
-    kiralynok(tabla, n, 0, q, sorrendek, jelenlegi);
+    kiralynok(tabla, oszlop, fo_atlo, mellek_atlo, n, 0, q, sorrendek, jelenlegi, keresett_tablak, keresett_tabla_sorrend_hely);
+    kiirat_sorrend_alapjan(keresett_tablak, sorrendek, n, keresett_tabla_sorrend_hely);
     cout << jelenlegi-1;
 
     return 0;
