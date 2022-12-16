@@ -1,4 +1,4 @@
-3 2
-piros 2
-piros 1
-sarga 3
+3 3
+Laci Bandi
+Laci Kati
+Bandi Kati
