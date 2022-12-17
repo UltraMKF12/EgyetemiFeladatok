@@ -2,12 +2,13 @@
 ; 514/2
 
 ; Labor: 4 - Modulok
-; Feladat: iostr
+; Feladat: strpelda
 
 ; Compile:
-; compile_run_module.bat L4\strpelda
+; compile_module.bat strpelda
 
-%include 'L4\iostr.inc'
+%include 'iostr.inc'
+%include 'strings.inc'
 
 global main
 
