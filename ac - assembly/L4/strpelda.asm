@@ -7,6 +7,7 @@
 ; Compile:
 ; compile_module.bat strpelda
 
+%include 'ionum.inc'
 %include 'iostr.inc'
 %include 'strings.inc'
 
