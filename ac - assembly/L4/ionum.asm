@@ -47,7 +47,6 @@ ReadInt:
     ;ecx - szorzó
     ;eax - számjegy
     ;ebx - segédszám
-
     .new_digit:
         lodsb
 
