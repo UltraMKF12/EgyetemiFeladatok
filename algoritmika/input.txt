@@ -1,11 +1,11 @@
-5. Feladatcsomag
-mpq
-Kiralynok
-Muveletek
-Torony
-PalindromGeneralas
-HuszarFutar
-LaciKonyve
-ABCLefedes
-MindenTavolsag
-Dijazas
+6. Feladatcsomag
+MatrixOsszeg
+Katonak
+BorAdasvetel
+SzamjegySzorzat
+Ciposdobozok
+BalraAt
+KifejezesErteke
+Motel
+OnlineAruhaz
+Kincstar
