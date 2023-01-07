@@ -1,11 +1,11 @@
-6. Feladatcsomag
-MatrixOsszeg
-Katonak
-BorAdasvetel
-SzamjegySzorzat
-Ciposdobozok
-BalraAt
-KifejezesErteke
-Motel
-OnlineAruhaz
-Kincstar
+7. Feladatcsomag
+Szamkitalalos
+Quickselect
+TobbsegiElemDivide
+2-SUM
+LokalisMinimum
+Hanoi2
+Inverziok
+Csarnok
+FuggvenyGyoke
+NegyzetreEmeles
