@@ -22,11 +22,45 @@ bool elem_ertek_rendezes(elem_eredeti &elso, elem_eredeti&masodik)
     return elso.ertek < masodik.ertek;
 }
 
-void binaris_kereses(vector<elem_eredeti> &tomb, int &elso, int &masodik, int osszeg, int index_also, int index_felso)
+int binaris_kereses(const vector<elem_eredeti> &tomb, int elem_keresett, int index_bal, int index_jobb)
 {
-    int index_kozep = (index_also + index_felso) / 2;
+    if(index_bal > index_jobb)
+    {
+        return -1;
+    }
+
+    int index_kozep = (index_bal + index_jobb) / 2;
     int elem_kozep = tomb[index_kozep].ertek;
-    if(elem_kozep > )
+    if(elem_keresett > elem_kozep)
+    {
+        return binaris_kereses(tomb, elem_keresett, index_kozep+1, index_jobb);
+    }
+    else if(elem_keresett < elem_kozep)
+    {
+        return binaris_kereses(tomb, elem_keresett, index_bal, index_kozep-1);
+    }
+    else
+    {
+        return index_kozep;
+    }
+}
+
+void ket_szam_osszege(const vector<elem_eredeti> &tomb, int &elso_index, int &masodik_index, int osszeg)
+{
+    for (int i = 0; i < tomb.size(); i++)
+    {
+        int keresett_elem = osszeg - tomb[i].ertek;
+        int keresett_index = binaris_kereses(tomb, keresett_elem, i+1, tomb.size()-1);
+        if(keresett_index != -1)
+        {
+            if((elso_index == -1 && masodik_index == -1) || (elso_index > tomb[i].index) || (elso_index == tomb[i].index && masodik_index > tomb[i].index))
+            {
+                elso_index = tomb[i].index;
+                masodik_index = tomb[keresett_index].index;
+            }
+        }
+    }
+    
 }
 
 int main()
@@ -50,7 +84,15 @@ int main()
 
     int elso = -1;
     int masodik = -1;
-    binaris_kereses(tomb, elso, masodik, x, 0, tomb.size()-1);
+    ket_szam_osszege(tomb, elso, masodik, x);
+    if(elso != -1)
+    {
+        cout << "1\n" << elso+1 << " " << masodik+1;
+    }
+    else
+    {
+        cout << 0;
+    }
 
     return 0;
 }
