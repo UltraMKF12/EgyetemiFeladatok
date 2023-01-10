@@ -7,7 +7,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#define MAX_INPUT_LENGTH 1000
+#define MAX_INPUT_LENGTH 1001
 
 // 1D dynamic memory stuff
 char *string_1D_malloc(int length)
@@ -101,6 +101,7 @@ char **read_input(int position_start, int position_end)
     char **char_string = string_2D_malloc(1);
     while(fgets(s, MAX_INPUT_LENGTH, input) != NULL)
     {
+        printf("asdcf");
         if(position_current >= position_start && position_current <= position_end)
         {
             char_string = string_2D_realloc(char_string, size, size+1);
