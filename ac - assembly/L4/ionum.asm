@@ -138,10 +138,12 @@ ReadBin:
     xor     ebx, ebx
 
     .number_build:
-        cmp     ecx, 32
+        cmp     ecx, 33
         jge     .error
 
         lodsb
+        cmp     al, 0
+        je      .end
         cmp     al, '0'
         jl      .error
         cmp     al, '1'
