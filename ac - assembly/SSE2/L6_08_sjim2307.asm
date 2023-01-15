@@ -2,7 +2,7 @@
 ; 514/2
 
 ; Labor: 6 - SSE 2
-; Feladat: SSE 2
+; Feladat: 8
 
 ;Olvassunk be két (A és B) azonos hosszúságú lebegőpontos értékekből álló tömböt (max. 256 elem). 
 ;Olvassuk be a tömbök hosszát (n integer, 4<=n<=256), majd a tömbök elemeit, minden elemet új sorból 
@@ -171,6 +171,6 @@ section .data
     float_harom     dd 3.0, 3.0, 3.0, 3.0
 
 section .bss
-    a   resd 256
-    b   resd 256
-    c   resd 256
+    a   resd 1025
+    b   resd 1025
+    c   resd 1025
