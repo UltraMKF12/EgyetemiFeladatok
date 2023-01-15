@@ -12,16 +12,10 @@
 
 ;global ReadInt   
 ;global WriteInt  
-;global ReadInt64 
-;global WriteInt64
 ;global ReadBin   
 ;global WriteBin  
-;global ReadBin64 
-;global WriteBin64
 ;global ReadHex   
 ;global WriteHex  
-;global ReadHex64 
-;global WriteHex64
 
 global main
 
@@ -109,20 +103,85 @@ ReadInt:
 
 
 WriteInt:
+    ;A fügvény EAX-ből írja ki a számot.
+
+    ;Értékek elmentése
+    push    eax                             ;Az eax értéke ne változzon a fügvény végére.
+    push    ebx                             ;ebx-el osztunk meg maradekot szamolunk
+    push    ecx                             ;Szamjegy szamlalo
+    push    edx                             ;Ide kerül majd számjegyenként az eax
+
+    ;Regiszterek beállítása
+    mov     ebx, 10                         ;Osztó
+    mov     ecx, 0                          ;Számjegy számláló
+
+
+    ;Pozitív és negatív számokra egyaránt működik
+    .szamjegy_lebontas:
+        cdq
+        idiv    ebx
+        push    edx                         ;A maradekot betenni a stackbe, hogy jó legyen a beolvasás
+
+        inc     ecx                         ;Növelni a számjegyek számát.
+
+        cmp     eax, 0
+        jne     .szamjegy_lebontas          ;Addig ismételni ameddig a számjegy nem 0
+
+
+    ;Meg kell szerezni a stack legfelső elemét, pop majd push-al nem rontjuk el a stack sorrendjét.
+    pop     eax
+    push    eax
+
+    ;Ha a szám negatív, akkor másként iratjuk ki
+    test    eax,eax
+    js      .negativ_szam
+
+
+    ;++++++++++++++
+    ;Pozitiv kiírás
+    ;++++++++++++++
+    .karakter_kiiras_pozitiv:
+        pop     eax                         ;Kiszedni a stackben levő számjegyet
+        add     eax, '0'                    ;A számjegyet karakter kóddá változtatni
+        call    mio_writechar               ;Kiiratni a számjegyet
+
+        loop    .karakter_kiiras_pozitiv    ;Addig ismételni amennyi számjegy van
+    
+
+    ;A kiírás végén .end-hez ugrunk.
+    jmp    .end 
+
+
+    ;--------------
+    ;Negatív kiírás
+    ;--------------
+    .negativ_szam:
+        ;Minusz jel kiírása
+        push    eax
+        mov     al, '-'
+        call    mio_writechar
+        pop     eax
+
+    .karakter_kiiras_negativ:
+        pop     eax                         ;Kiszedni a stackben levő számjegyet
+
+        ;Komplementer kódolás
+        NOT     eax
+        inc     eax
+
+        add     eax, '0'                    ;A számjegyet karakter kóddá változtatni
+        call    mio_writechar               ;Kiiratni a számjegyet
+
+        loop    .karakter_kiiras_negativ    ;Addig ismételni amennyi számjegy van
+
 
     .end:
-        ret
+        ;Visszaszerezzük az értékekek stackből.
+        pop     edx
+        pop     ecx
+        pop     ebx
+        pop     eax
 
-
-ReadInt64:
-
-    .end:
-        ret
-
-
-WriteInt64:
-
-    .end:
         ret
 
 
@@ -133,6 +192,9 @@ ReadBin:
     mov     esi, esp
     call    ReadStr
     
+    push    ecx
+    push    ebx
+
     xor     ecx, ecx                        ;counter
     xor     eax, eax
     xor     ebx, ebx
@@ -158,6 +220,9 @@ ReadBin:
         jmp     .number_build
 
     .error:
+        pop     ebx
+        pop     ecx
+
         add     esp, 500
         pop     esi
 
@@ -165,6 +230,9 @@ ReadBin:
         stc
         ret
     .end:
+        pop     ebx
+        pop     ecx
+
         add     esp, 500
         pop     esi
 
@@ -215,56 +283,36 @@ WriteBin:
         ret
 
 
-ReadBin64:
-
-    .end:
-        ret
-
-
-WriteBin64:
-
-    .end:
-        ret
-
-
 ReadHex:
     ;AL                                   0000 0000 - FF
     ;AX                         0000 0000 0000 0000 - FFFF
     ;EAX    0000 0000 0000 0000 0000 0000 0000 0000 - FFFF FFFF
     
     ;A fügvény EAX-be olvassa be az értéket.
+    push    esi
+    sub     esp, 500
+    mov     esi, esp
+    call    ReadStr
 
     push    ebx                             ;Kell az ebx szam felepitesre
     push    ecx                             ;Számláló, max 8 szám lehet beírva
     xor     ebx, ebx
     xor     ecx, ecx
 
-    .bemenet_szoveg:
-        ;Szöveg kiiratás
-        push    esi
-        mov     esi, str_hexa_prefix
-        call    WriteStr
-        pop     esi
-
 
     .uj_karakter:
-        xor     eax, eax                    ;Le kell nullázni hibák elkerülésére
-        call    mio_readchar
+        xor     eax, eax
+        lodsb
 
         ;ENTER - eseten véget ér a beolvasás
-        cmp     al, 13
+        cmp     al, 0
         je      .end
-
-        ;BACKSPACE
-        cmp     al, 8
-        je      .backspace
-
-        ;Karakter kiiratasa
-        call    mio_writechar
 
         ;MAXIMÁLIS HOSSZ
         cmp     ecx, 8                      ;Ha 8 karakter hosszú a hexa számjegy, akkor már nem lehet többet beleírni.
-        je      .hiba
+        jge      .hiba
+
+        inc     ecx
 
         ;--------Szám Ellenrőzések--------
         ;(ASCII) Legkissebtől kezdbe, legnagyobbig haladva, megnézzük, hogy benne van e a felső határban.
@@ -317,33 +365,19 @@ ReadHex:
         inc     ecx                         ;Karakter számláló növelése
         jmp     .uj_karakter
 
-    
-    .backspace:
-        cmp     ecx, 0                      ;Ne tudjuk kitörölni olyan szöveget, amit nem mi irtunk
-        je      .uj_karakter
-        
-        mov     al, 8                       ;Nem volt kiírva a backspace, hogy ne menjünk vissza, ha nem lenne szabad
-        call    mio_writechar
-        mov     al, ' '
-        call    mio_writechar
-        mov     al, 8
-        call    mio_writechar
-
-        dec     ecx                         ;Csökken a karakter számláló
-        shr     ebx, 4                      ;Visszavisszük a beolvasható poziciót
-
-        ;Uj karaktert kell bekerni.
-        jmp    .uj_karakter
-
 
     .hiba:
         ;Betesszük a számot eax-be.
         mov     eax, ebx
 
+
         ;Visszaszerezzük az értékekek stackből.
         pop     ecx
         pop     ebx
 
+        add     esp, 500
+        pop     esi
+        
         stc
         ret
 
@@ -352,9 +386,13 @@ ReadHex:
         ;Betesszük a számot eax-be.
         mov     eax, ebx
 
+
         ;Visszaszerezzük az értékekek stackből.
         pop     ecx
         pop     ebx
+
+        add     esp, 500
+        pop     esi
 
         ret
 
@@ -423,25 +461,16 @@ WriteHex:
         ret
 
 
-ReadHex64:
-
-    .end:
-        ret
-
-
-WriteHex64:
-
-    .end:
-        ret
-
-
-
 main:
     mov     esi, str_a_text
     call    WriteStr
     call    ReadBin
     call    NewLine
     call    WriteBin
+    call    NewLine
+    call    WriteHex
+    call    NewLine
+    call    WriteInt
 
     ret
     
