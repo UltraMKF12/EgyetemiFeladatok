@@ -1,0 +1,24 @@
+Beolvas[32bit] = -16
+Kiir[32bit] >> -16
+Kiir[Hexa] >> 0xFFFFFFF0
+Kiir[Binaris] >> 1111 1111 1111 1111 1111 1111 1111 0000 
+
+Beolvas[Hexa] = ffffffe9
+Kiir[32bit] >> -23
+Kiir[Hexa] >> 0xFFFFFFE9
+Kiir[Binaris] >> 1111 1111 1111 1111 1111 1111 1110 1001 
+
+Beolvas[Binaris] = 00000000000000000000000001001001
+Kiir[32bit] >> 73
+Kiir[Hexa] >> 0x00000049
+Kiir[Binaris] >> 0000 0000 0000 0000 0000 0000 0100 1001 
+
+Kiir[32bit] >> -16
+Kiir[32bit] >> -23
+Kiir[32bit] >> 73
+Kiir[Hexa] >> 0xFFFFFFF0
+Kiir[Hexa] >> 0xFFFFFFE9
+Kiir[Hexa] >> 0x00000049
+Kiir[Binaris] >> 1111 1111 1111 1111 1111 1111 1111 0000 
+Kiir[Binaris] >> 1111 1111 1111 1111 1111 1111 1110 1001 
+Kiir[Binaris] >> 0000 0000 0000 0000 0000 0000 0100 1001 

@@ -6,18 +6,18 @@
 
 ; Compile:
 ; compile_module.bat ionum
+; nasm -f win32 ionum.asm
 
 %include 'iostr.inc'
 %include 'mio.inc'
 
-;global ReadInt   
-;global WriteInt  
-;global ReadBin   
-;global WriteBin  
-;global ReadHex   
-;global WriteHex  
+global ReadInt   
+global WriteInt  
+global ReadBin   
+global WriteBin  
+global ReadHex   
+global WriteHex  
 
-global main
 
 section .text
 
@@ -481,24 +481,7 @@ WriteHex:
         pop     eax
 
         ret
-
-
-main:
-    mov     esi, str_a_text
-    call    WriteStr
-    call    ReadInt
-    call    NewLine
-    call    WriteBin
-    call    NewLine
-    call    WriteHex
-    call    NewLine
-    call    WriteInt
-
-    ret
     
-section .data
-    str_a_text db "A = ", 0
-    str_hexa_prefix db "0x", 0
 
-section .bss
-    str_a   resb 256
+section .data
+    str_hexa_prefix db "0x", 0
