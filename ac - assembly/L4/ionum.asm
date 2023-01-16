@@ -28,20 +28,23 @@ ReadInt:
     push    ecx
     push    edx
 
+    sub     esp, 500
+    mov     esi, esp
+    mov     ecx, 256
+    call    ReadStr
+
     xor     eax, eax
     xor     ebx, ebx
     xor     edx, edx
+    xor     edi, edi
 
-    mov     esi, esp
-    sub     esi, 500
-    mov     ecx, 256
-    call    ReadStr
 
     mov     ecx, 10
     ;esi - szám-szöveg
     ;ecx - szorzó
     ;eax - számjegy
     ;ebx - segédszám
+    ;edi - ne legyen az elejen kivul mashol minusz jel
     .new_digit:
         lodsb
 
@@ -51,13 +54,13 @@ ReadInt:
         ;Minusz jel
         cmp     al, '-'
         je      .minus
+        inc     edi
 
         ;Ha nem számjegy
         cmp     al, '0'
         jl      .error
         cmp     al, '9'
         jg      .error
-
 
         imul    ebx, ecx
         jo      .error
@@ -72,8 +75,10 @@ ReadInt:
         jmp     .error
 
      .minus:
-        cmp     edx, 1
-        je      .error
+        cmp     edi, 1
+        jge     .error
+        inc     edi
+
         mov     edx, 1
         jmp     .new_digit
     
@@ -90,9 +95,22 @@ ReadInt:
 
 
     .error:
+        mov     eax, ebx
+
+        add     esp, 500
+        pop     edx
+        pop     ecx
+        pop     ebx
+        pop     edi
+        pop     esi
+
         stc
+        ret
 
     .end:
+        mov     eax, ebx
+
+        add     esp, 500
         pop     edx
         pop     ecx
         pop     ebx
@@ -187,13 +205,15 @@ WriteInt:
 
 ReadBin:
     ;EAX beolvasasa 32 bites bináris alakban
-    push    esi
-    sub     esp, 500
-    mov     esi, esp
-    call    ReadStr
-    
     push    ecx
     push    ebx
+    push    esi
+
+    sub     esp, 500
+    mov     esi, esp
+    mov     ecx, 256
+    call    ReadStr
+    
 
     xor     ecx, ecx                        ;counter
     xor     eax, eax
@@ -220,23 +240,25 @@ ReadBin:
         jmp     .number_build
 
     .error:
-        pop     ebx
-        pop     ecx
+        mov     eax, ebx
 
         add     esp, 500
         pop     esi
+        pop     ebx
+        pop     ecx
 
-        mov     eax, ebx
+
         stc
         ret
     .end:
-        pop     ebx
-        pop     ecx
+        mov     eax, ebx
 
         add     esp, 500
         pop     esi
+        pop     ebx
+        pop     ecx
 
-        mov     eax, ebx
+
         ret
 
 
@@ -290,12 +312,14 @@ ReadHex:
     
     ;A fügvény EAX-be olvassa be az értéket.
     push    esi
-    sub     esp, 500
-    mov     esi, esp
-    call    ReadStr
-
     push    ebx                             ;Kell az ebx szam felepitesre
     push    ecx                             ;Számláló, max 8 szám lehet beírva
+
+    sub     esp, 500
+    mov     esi, esp
+    mov     ecx, 256
+    call    ReadStr
+
     xor     ebx, ebx
     xor     ecx, ecx
 
@@ -311,8 +335,6 @@ ReadHex:
         ;MAXIMÁLIS HOSSZ
         cmp     ecx, 8                      ;Ha 8 karakter hosszú a hexa számjegy, akkor már nem lehet többet beleírni.
         jge      .hiba
-
-        inc     ecx
 
         ;--------Szám Ellenrőzések--------
         ;(ASCII) Legkissebtől kezdbe, legnagyobbig haladva, megnézzük, hogy benne van e a felső határban.
@@ -372,11 +394,11 @@ ReadHex:
 
 
         ;Visszaszerezzük az értékekek stackből.
+        add     esp, 500
         pop     ecx
         pop     ebx
-
-        add     esp, 500
         pop     esi
+
         
         stc
         ret
@@ -388,11 +410,11 @@ ReadHex:
 
 
         ;Visszaszerezzük az értékekek stackből.
+        add     esp, 500
         pop     ecx
         pop     ebx
-
-        add     esp, 500
         pop     esi
+
 
         ret
 
@@ -464,7 +486,7 @@ WriteHex:
 main:
     mov     esi, str_a_text
     call    WriteStr
-    call    ReadBin
+    call    ReadInt
     call    NewLine
     call    WriteBin
     call    NewLine
