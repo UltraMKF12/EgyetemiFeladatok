@@ -108,11 +108,11 @@ char **read_input(int position_start, int position_end)
             int string_length = strlen(s);
 
             //Ki kell törölni a new linet a végéről
-            if(s[string_length-1] == '\n')
-            {
-                s[string_length-1] = '\0';
-                string_length--;
-            }
+            // if(s[string_length-1] == '\n')
+            // {
+            //     s[string_length-1] = '\0';
+            //     string_length--;
+            // }
 
             char_string[size] = string_1D_realloc(char_string[size], string_length);
             strcpy(char_string[size], s);
@@ -388,13 +388,15 @@ void convert_morse(char **morse_code_lines, int length)
 {
     for (int i = 0; i <= length; i++)
     {
+        printf("%s", morse_code_lines[i]);
         int letters_decoded = 0;
+        // printf("%s\n", morse_code_lines[i]);
         while(letters_decoded < strlen(morse_code_lines[i]))
         {
             char morse[10]; // Nem lehet ettol hosszab morse kod
             int morse_count = 0;
             int position = letters_decoded;
-            while(morse_code_lines[i][position] != ' ' && morse_code_lines[i][position] != '\0')
+            while(morse_code_lines[i][position] != ' ' && morse_code_lines[i][position] != '\0' && morse_code_lines[i][position] != '\n')
             {
                 morse[morse_count] = morse_code_lines[i][position];
                 morse_count++;
@@ -414,14 +416,13 @@ void convert_morse(char **morse_code_lines, int length)
                 if(morse_code_lines[i][position] == '\0')
                 {
                     memmove(morse_code_lines[i] + letters_decoded, morse_code_lines[i] + position, 1);
-                    morse_code_lines[i] = string_1D_realloc(morse_code_lines[i], strlen(morse_code_lines[i]) + 1 - (position - letters_decoded + 1));
+                    // morse_code_lines[i] = string_1D_realloc(morse_code_lines[i], strlen(morse_code_lines[i]) + 1 - (position - letters_decoded + 1));
                 }
                 else
                 {
                     memmove(morse_code_lines[i] + letters_decoded, morse_code_lines[i] + position+1, (strlen(morse_code_lines[i]) - position));
-                    morse_code_lines[i] = string_1D_realloc(morse_code_lines[i], strlen(morse_code_lines[i]) + 1 - (position - letters_decoded));
+                    // morse_code_lines[i] = string_1D_realloc(morse_code_lines[i], strlen(morse_code_lines[i]) + 1 - (position - letters_decoded));
                 }
-                // printf("%s\n", morse_code_lines[i]);
             }
             else
             {
@@ -440,6 +441,7 @@ int main(int argc, const char *argv[])
     //Ha helytelenek a parameterek, akkor ki kell irni, hogy "hiba"
     if(!parameter_check(argc, argv))
     {
+        printf("Alma");
         FILE *output = fopen("output.txt", "w");
         fprintf(output, "hiba");
         fclose(output);
@@ -455,8 +457,12 @@ int main(int argc, const char *argv[])
     // char **morse_code_lines = string_2D_malloc(2);
     // morse_code_lines[0] = string_1D_realloc(morse_code_lines[0], strlen("-- --- .-. ... .       -.-. --- -.. ."));
     // strcpy(morse_code_lines[0], "-- --- .-. ... .       -.-. --- -.. .");
-
+    
     convert_morse(morse_code_lines, length);
+    for (int i = 0; i <= length; i++)
+    {
+        printf("%s\n", morse_code_lines[i]);
+    }
 
     FILE *output = fopen("output.txt", "w");
     for (int i = 0; i <= length; i++)
