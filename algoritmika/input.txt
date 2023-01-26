@@ -1,11 +1,11 @@
-7. Feladatcsomag
-Szamkitalalos
-Quickselect
-TobbsegiElemDivide
-2-SUM
-LokalisMinimum
-Hanoi2
-Inverziok
-Csarnok
-FuggvenyGyoke
-NegyzetreEmeles
+8. Feladatcsomag
+FaktDP
+KombMemo
+Dominok2
+UtakSzama
+LegnagyobbNegyzet
+Viragok
+KulonbozoReszek
+MatrixokSzorzasa
+Viraguzlet
+Taviranyito
