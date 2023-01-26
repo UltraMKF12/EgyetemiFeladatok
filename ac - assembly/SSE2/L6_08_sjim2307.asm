@@ -167,10 +167,10 @@ section .data
     str_rossz_n     db "Hiba: N nem oszthato 4-el!", 0
     str_megoldasok  db "Megoldasok: ", 0
 
-    float_ketto_het dd 2.7, 2.7, 2.7, 2.7
-    float_harom     dd 3.0, 3.0, 3.0, 3.0
+    float_ketto_het db 2.7, 2.7, 2.7, 2.7
+    float_harom     db 3.0, 3.0, 3.0, 3.0
 
 section .bss
-    a   resd 1025
-    b   resd 1025
-    c   resd 1025
+    a   resb 1025
+    b   resb 1025
+    c   resb 1025
