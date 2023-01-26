@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "stdlib.h": "c",
-        "type_traits": "c"
+        "type_traits": "c",
+        "stdbool.h": "c",
+        "ctype.h": "c",
+        "string.h": "c"
     }
 }
