@@ -84,6 +84,11 @@ main:
     ;Feladat: E(a,b) = 2.7 * a * b - sqrt(a + b / 3) + max(a, b)
     xor     ecx, ecx
     xor     esi, esi
+    push    eax
+    push    ebx
+    mov     ebx, 4
+    cdq
+    div     ebx
     .feladat:
         ;-------------------------
         ; xmm0 - a
@@ -129,6 +134,8 @@ main:
         jl      .feladat
 
 
+    pop     ebx
+    pop     eax
     ;Eredmeny Kiiratas:
     push    eax
     call    io_writeln
@@ -171,6 +178,6 @@ section .data
     float_harom     dd 3.0, 3.0, 3.0, 3.0
 
 section .bss
-    a   resb 4500
-    b   resb 4500
-    c   resb 4500
+    a   resd 256
+    b   resd 256
+    c   resd 256
