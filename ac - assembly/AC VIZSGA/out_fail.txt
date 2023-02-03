@@ -1,0 +1,9 @@
+((D + C) div 3 - min(A+C, B+F) + E*(G-6)) mod (D - 5) * (E+C)
+A = -44
+B = 15
+C = 26
+D = -1
+E = 8
+F = -29
+G = 8
+Eredmeny = 1605472768
