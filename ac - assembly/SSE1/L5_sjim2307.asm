@@ -362,7 +362,29 @@ Kettevalasztas:
 
     .pont:
         mov     edi, temp2
-        jmp     .darabolas
+        jmp     .pont_darabolas
+    .pont_darabolas:
+        xor     eax, eax
+        lodsb
+
+        cmp     al, 0
+        je      .end
+
+        cmp     al, "9"
+        jg      .hiba
+        cmp     al, "0"
+        jl      .hiba
+        
+        stosb
+        mov     [edi + 1], byte 0
+
+        cmp     al, "0"
+        je      .nullas
+        jmp     .nem_nullas
+        .nullas:
+            inc     ecx
+        .nem_nullas:
+            jmp     .pont_darabolas
 
     .hiba:
         stc
@@ -441,9 +463,38 @@ KettevalasztasEX:
 
     .pont:
         mov     edi, temp2
-        jmp     .darabolas
+        jmp     .pont_darabolas
+    .pont_darabolas:
+        xor     eax, eax
+        lodsb
+
+        cmp     al, 0
+        je      .end
+
+        cmp     al, "e"
+        je      .e_betu
+
+        cmp     al, "E"
+        je      .e_betu
+
+        cmp     al, "9"
+        jg      .hiba
+        cmp     al, "0"
+        jl      .hiba
+        
+        stosb
+        mov     [edi + 1], byte 0
+
+        cmp     al, "0"
+        je      .nullas
+        jmp     .nem_nullas
+        .nullas:
+            inc     ecx
+        .nem_nullas:
+            jmp     .pont_darabolas
 
     .e_betu:
+        push    ecx
         mov     edi, temp4
         xor     eax, eax
         lodsb
@@ -480,6 +531,7 @@ KettevalasztasEX:
         stc
         ret
     .end:
+        pop     edi
         mov     esi, temp4
         call    ReadInt
         mov     ecx, eax
@@ -518,11 +570,19 @@ ReadFloat:
     .nullazas:
         cvttss2si   eax, xmm1
         cmp         eax, 0
-        je          .end
+        je          .nullavisszaadas
 
         divss       xmm1, xmm2
         jmp         .nullazas
     
+    .nullavisszaadas:
+        cmp     ecx, 0
+        je      .end
+
+        dec     ecx
+
+        divss   xmm1, xmm2
+        jmp     .nullavisszaadas
 
     .end:
         addss   xmm0, xmm1
@@ -588,6 +648,7 @@ ReadFloatEX:
     ;EBX = masodik resz
     ;ECX = E erteke
     ;EDX = elojel
+    ;EDI = nulla visszaadas
 
     ;Egesz resz
     xorps       xmm0, xmm0
@@ -602,11 +663,20 @@ ReadFloatEX:
     .nullazas:
         cvttss2si   eax, xmm1
         cmp         eax, 0
-        je          .e_ezes
+        je          .nullavisszaadas
 
         divss       xmm1, xmm2
         jmp         .nullazas
     
+    .nullavisszaadas:
+        cmp     edi, 0
+        je      .e_ezes
+
+        dec     edi
+
+        divss   xmm1, xmm2
+        jmp     .nullavisszaadas
+
     .e_ezes:
         addss   xmm0, xmm1
         cmp     edx, 1
@@ -649,7 +719,7 @@ WriteFloatEX:
 ;------------------------
 main:
     ;E(a,b,c,d) = a * (d - b) - sqrt(a + c / 2)
-    call    io_readflt
+    call    ReadFloat
     call    NewLine
     call    WriteFloat
     ret
