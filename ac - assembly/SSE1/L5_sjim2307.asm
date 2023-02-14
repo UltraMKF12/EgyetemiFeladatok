@@ -420,7 +420,38 @@ ReadFloat:
         ret
 
 WriteFloat:
-    ret
+    ;Megnezni negativ vagy pozitiv
+    pushad
+
+    cvttss2si   eax, xmm0
+    cmp         eax, 0
+    jl          .negativ
+    jmp         .nem_negativ
+
+    .negativ:
+        movss   xmm1, [float_negativ]
+        mulss   xmm0, xmm1
+        mov     eax, "-"
+        call    mio_writechar
+
+    .nem_negativ:
+    cvttss2si   eax, xmm0
+    call    WriteInt
+
+    cvtsi2ss    xmm1, eax
+    subss       xmm0, xmm1
+
+    mov     eax, "."
+    call    mio_writechar
+
+    movss   xmm1, [float_negy]
+    mulss   xmm0, xmm1
+    cvttss2si   eax, xmm0
+    call    WriteInt
+
+    .end:
+        popad
+        ret
 ;---------------------------
 
 
@@ -437,7 +468,7 @@ main:
     ;E(a,b,c,d) = a * (d - b) - sqrt(a + c / 2)
     call    ReadFloat
     call    NewLine
-    call    io_writeflt
+    call    WriteFloat
     ret
     
     
@@ -450,6 +481,7 @@ section .data
     str_kiir_ex         db "[Kiir][EX-Float] >>> ", 0
 
     float_div           dd 10.0
+    float_negy          dd 10000.0
     float_negativ       dd -1.0
 
 section .bss
