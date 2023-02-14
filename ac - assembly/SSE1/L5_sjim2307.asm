@@ -649,7 +649,7 @@ WriteFloatEX:
 ;------------------------
 main:
     ;E(a,b,c,d) = a * (d - b) - sqrt(a + c / 2)
-    call    ReadFloatEX
+    call    io_readflt
     call    NewLine
     call    WriteFloat
     ret
