@@ -11,10 +11,9 @@
 ;E(a,b,c,d) = a * (d - b) - sqrt(a + c / 2)
 
 ; Compile:
-; compile_run.bat SSE1\L5_sjim2307
+; compile_run.bat SSE1\L5_8_sjim2307
 
 %include 'mio.inc'
-%include 'io.inc'
 
 global main
 section .text
@@ -356,7 +355,7 @@ Kettevalasztas:
         jl      .hiba
         
         stosb
-        mov     [edi + 1], byte 0
+        mov     [edi], byte 0
 
         jmp     .darabolas
 
@@ -376,7 +375,7 @@ Kettevalasztas:
         jl      .hiba
         
         stosb
-        mov     [edi + 1], byte 0
+        mov     [edi], byte 0
 
         cmp     al, "0"
         je      .nullas
@@ -458,7 +457,7 @@ KettevalasztasEX:
         jl      .hiba
         
         stosb
-        mov     [edi + 1], byte 0
+        mov     [edi], byte 0
 
         jmp     .darabolas
 
@@ -484,7 +483,7 @@ KettevalasztasEX:
         jl      .hiba
         
         stosb
-        mov     [edi + 1], byte 0
+        mov     [edi], byte 0
 
         cmp     al, "0"
         je      .nullas
@@ -525,7 +524,7 @@ KettevalasztasEX:
         jl      .hiba
 
         stosb
-        mov     [edi + 1], byte 0
+        mov     [edi], byte 0
 
         jmp     .e_betu_loop
 
@@ -541,16 +540,15 @@ KettevalasztasEX:
         mov     esi, temp2
         call    ReadInt
         mov     ebx, eax
+
         mov     esi, temp1
         call    ReadInt
-        call    NewLine
         ret
 
 
 ;_______[Sima float]_______
 ReadFloat:
     pushad
-
     ;Beolvasni a számot
     ;+- első karakter után állítani a +- dolgot.
     ;. karakternél kettéválaszatni, két számjegyet kinyerni, majd floatos cuccként összeadni
@@ -558,6 +556,12 @@ ReadFloat:
     mov     ecx, 256
     call    ReadStr
     call    Kettevalasztas      ;Kettevalasztja eax es ebx-be a pontnal a szamokat. EDX elojel
+    
+    xorps       xmm0, xmm0
+    xorps       xmm1, xmm1
+    xorps       xmm2, xmm2
+    xorps       xmm3, xmm3
+    xorps       xmm4, xmm4
 
     ;Egesz resz
     xorps       xmm0, xmm0
@@ -601,7 +605,8 @@ ReadFloat:
 WriteFloat:
     ;Megnezni negativ vagy pozitiv
     pushad
-
+    movss       xmm5, xmm0
+    
     movd        eax, xmm0
     test        eax, 0x80000000
     jnz         .negativ
@@ -636,6 +641,7 @@ WriteFloat:
         loop    .tizedes_kiiratas
 
     .end:
+        movss       xmm0, xmm5
         popad
         ret
 ;---------------------------
@@ -658,6 +664,12 @@ ReadFloatEX:
     ;ECX = E erteke
     ;EDX = elojel
     ;EDI = nulla visszaadas
+    xorps       xmm0, xmm0
+    xorps       xmm1, xmm1
+    xorps       xmm2, xmm2
+    xorps       xmm3, xmm3
+    xorps       xmm4, xmm4
+
 
     ;Egesz resz
     xorps       xmm0, xmm0
@@ -708,8 +720,6 @@ ReadFloatEX:
 
         jmp     .e_ezes_loop_pozitiv
     .e_ezes_loop_negativ:
-        call    io_writeflt
-        call    NewLine
         cmp     ecx, 0
         je      .end
 
@@ -723,28 +733,151 @@ ReadFloatEX:
         ret
 
 WriteFloatEX:
-    ret
+    ;Megnezni negativ vagy pozitiv
+    pushad
+    movss       xmm5, xmm0
 
+    movd        eax, xmm0
+    test        eax, 0x80000000
+    jnz         .negativ
+    jmp         .pozitiv
+
+    .negativ:
+        mov     eax, "-"
+        call    mio_writechar
+        movss   xmm1, [float_negativ]
+        mulss   xmm0, xmm1
+    .pozitiv:
+    
+    ;Eltolas
+    xor         edx, edx
+    movss       xmm1, [float_div]
+
+    .eltolas:
+        roundss     xmm2, xmm0, 3
+        cvttss2si   eax, xmm2
+        cmp         eax, 10
+        jge         .nagyobb
+        cmp         eax, 1
+        jl          .kisebb
+        jmp         .eltolas_veg
+    .nagyobb:
+        divss       xmm0, xmm1
+        inc         edx
+        jmp         .eltolas
+    .kisebb:
+        mulss       xmm0, xmm1
+        dec         edx
+        jmp         .eltolas
+    .eltolas_veg:
+
+    ;Egesz resz
+    cvttss2si   eax, xmm0
+    call        WriteInt
+
+    mov     eax, "."
+    call    mio_writechar
+
+    ;Kivonni az egesz reszt
+    roundss     xmm2, xmm0, 3
+    subss       xmm0, xmm2
+
+    movss       xmm1, [float_div]
+    mov         ecx, 6
+    .tizedes_kiiratas:
+        mulss       xmm0, xmm1
+        roundss     xmm2, xmm0, 3
+        subss       xmm0, xmm2
+        cvttss2si   eax, xmm2
+        call        WriteInt
+        loop    .tizedes_kiiratas
+
+    ;E kiirasa
+    mov     eax, "e"
+    call    mio_writechar
+    mov     eax, edx
+    call    WriteInt
+
+    .end:
+        movss       xmm0, xmm5
+        popad
+        ret
 ;------------------------
 main:
     ;E(a,b,c,d) = a * (d - b) - sqrt(a + c / 2)
-    call    ReadFloatEX
+    mov     esi, str_feladat
+    call    WriteLnStr
+
+    mov     esi, str_beolvas_float
+    call    WriteStr
+    call    ReadFloat
+    movss   [a], xmm0
     call    NewLine
+
+    mov     esi, str_beolvas_ex
+    call    WriteStr
+    call    ReadFloatEX
+    movss   [b], xmm0
+    call    NewLine
+
+    mov     esi, str_beolvas_float
+    call    WriteStr
+    call    ReadFloat
+    movss   [c], xmm0
+    call    NewLine
+
+    mov     esi, str_beolvas_ex
+    call    WriteStr
+    call    ReadFloatEX
+    movss   [d], xmm0
+    call    NewLine
+
+    ;a * (d - b) -> xmm0
+    movss       xmm4, [d]
+    movss       xmm2, [b]
+    subss       xmm4, xmm2
+    
+    movss       xmm0, [a]
+    mulss       xmm0, xmm4
+
+    ;sqrt(a + c / 2) -> xmm1
+    movss       xmm1, [a]
+    movss       xmm2, [c]
+    movss       xmm3, [float_ketto]
+
+    divss       xmm2, xmm3
+    addss       xmm1, xmm2
+    sqrtss      xmm1, xmm1
+
+    ;xmm0 - xmm1
+    subss       xmm0, xmm1
+    
+    ;Eredmeny Kiiras
+    call    NewLine
+    mov     esi, str_kiir_float
+    call    WriteStr
     call    WriteFloat
+    call    NewLine
+    mov     esi, str_kiir_ex
+    call    WriteStr
+    call    WriteFloatEX
+    call    NewLine
+
     ret
     
     
 section .data
     str_feladat         db "Feladat: E(a,b,c,d) = a * (d - b) - sqrt(a + c / 2)", 0
-    str_feladat2        db "E(a,b,c,d) = ", 0
+    str_feladat2        db "E(a,b,c,d) ", 0
     str_beolvas_float   db "[Beolvas][Float] = ", 0
     str_beolvas_ex      db "[Beolvas][EX-Float] = ", 0
-    str_kiir_float      db "[Kiir][EX-Float] >>> ", 0
-    str_kiir_ex         db "[Kiir][EX-Float] >>> ", 0
+    str_kiir_float      db "[Float] >>> ", 0
+    str_kiir_ex         db "[EX-Float] >>> ", 0
 
     float_div           dd 10.0
     float_negy          dd 10000.0
     float_negativ       dd -1.0
+    float_ketto         dd 2.0
 
 section .bss
     temp1 resb 256
