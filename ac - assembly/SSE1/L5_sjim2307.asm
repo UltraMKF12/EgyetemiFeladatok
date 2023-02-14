@@ -383,8 +383,9 @@ Kettevalasztas:
         jmp     .nem_nullas
         .nullas:
             inc     ecx
-        .nem_nullas:
             jmp     .pont_darabolas
+        .nem_nullas:
+            jmp     .darabolas
 
     .hiba:
         stc
@@ -490,8 +491,9 @@ KettevalasztasEX:
         jmp     .nem_nullas
         .nullas:
             inc     ecx
-        .nem_nullas:
             jmp     .pont_darabolas
+        .nem_nullas:
+            jmp     .darabolas
 
     .e_betu:
         push    ecx
@@ -600,31 +602,38 @@ WriteFloat:
     ;Megnezni negativ vagy pozitiv
     pushad
 
-    cvttss2si   eax, xmm0
-    cmp         eax, 0
-    jl          .negativ
-    jmp         .nem_negativ
+    movd        eax, xmm0
+    test        eax, 0x80000000
+    jnz         .negativ
+    jmp         .pozitiv
 
     .negativ:
-        movss   xmm1, [float_negativ]
-        mulss   xmm0, xmm1
         mov     eax, "-"
         call    mio_writechar
-
-    .nem_negativ:
+        movss   xmm1, [float_negativ]
+        mulss   xmm0, xmm1
+    .pozitiv:
+    
+    ;Egesz resz
     cvttss2si   eax, xmm0
-    call    WriteInt
-
-    cvtsi2ss    xmm1, eax
-    subss       xmm0, xmm1
+    call        WriteInt
 
     mov     eax, "."
     call    mio_writechar
 
-    movss   xmm1, [float_negy]
-    mulss   xmm0, xmm1
-    cvttss2si   eax, xmm0
-    call    WriteInt
+    ;Kivonni az egesz reszt
+    roundss     xmm2, xmm0, 3
+    subss       xmm0, xmm2
+
+    movss       xmm1, [float_div]
+    mov         ecx, 4
+    .tizedes_kiiratas:
+        mulss       xmm0, xmm1
+        roundss     xmm2, xmm0, 3
+        subss       xmm0, xmm2
+        cvttss2si   eax, xmm2
+        call        WriteInt
+        loop    .tizedes_kiiratas
 
     .end:
         popad
@@ -719,7 +728,7 @@ WriteFloatEX:
 ;------------------------
 main:
     ;E(a,b,c,d) = a * (d - b) - sqrt(a + c / 2)
-    call    ReadFloat
+    call    ReadFloatEX
     call    NewLine
     call    WriteFloat
     ret
