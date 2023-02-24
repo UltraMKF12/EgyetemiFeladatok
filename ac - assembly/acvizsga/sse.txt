@@ -1,0 +1,74 @@
+MOVSS - adatmozgatás
+MOVSS cél, forrás
+cél <- forrás
+Lehetséges operandusok:
+MOVSS xmm1, xmm2/m32
+MOVSS xmm2/m32, xmm1
+
+ADDSS - összeadás
+ADDSS cél, forrás
+cél <- cél + forrás
+Lehetséges operandusok:
+ADDSS xmm1, xmm2/m32
+
+SUBSS - kivonás
+SUBSS cél, forrás
+cél <- cél - forrás
+Lehetséges operandusok:
+SUBSS xmm1, xmm2/m32
+
+MULSS - szorzás
+MULSS cél, forrás
+cél <- cél * forrás
+Lehetséges operandusok:
+MULSS xmm1, xmm2/m32
+
+DIVSS - osztás
+DIVSS cél, forrás
+cél <- cél / forrás
+Lehetséges operandusok:
+DIVSS xmm1, xmm2/m32
+
+MINSS - minimumszámítás
+MINSS cél, forrás
+cél <- min(cél, forrás)
+Lehetséges operandusok:
+MINSS xmm1, xmm2/m32
+
+MAXSS - maximumszámítás
+MAXSS cél, forrás
+cél <- max(cél, forrás)
+Lehetséges operandusok:
+MAXSS xmm1, xmm2/m32
+
+SQRTSS - négyzetgyökvonás
+SQRTSS cél, forrás
+cél <- sqrt(forrás)
+Lehetséges operandusok:
+SQRTSS xmm1, xmm2/m32
+
+COMISS - két operandus összehasonlítása
+COMISS a, b
+Beállítja a ZF, PF és CF flageket. Ez azt jelenti, hogy elojel nélküli feltételeket kell használni (pl. ja, jb).
+Lehetséges operandusok:
+COMISS xmm1, xmm2/m32
+
+CVTSI2SS - 32 bites elojeles egész egyszeres pontosságú lebegopontos értékké való alakítása
+CVTSI2SS cél, forrás
+Lehetséges operandusok:
+CVTSI2SS xmm, r/m32
+
+CVTTSS2SI - egyszeres pontosságú lebegopontos érték 32 bites elojeles egésszé való alakítása csonkítással (truncation, pl. 2.7 ? 2, -3.8 ? -3)
+CVTTSS2SI cél, forrás
+Lehetséges operandusok:
+CVTTSS2SI r32, xmm/m32
+
+XORPS - bitenkénti XOR muvelet az egész (128 bites) XMM regiszteren (lehet használni egy lebegopontos érték lenullázására)
+XORPS cél, forrás
+Lehetséges operandusok:
+XORPS xmm1, xomm2/m128
+
+ROUNDSS - egyszeres pontosságú lebegopontos érték kerekítése (SSE4.1 utasítás, csak 2007 utáni processzorokban támogatott!)
+ROUNDSS cél, forrás, kerekítési mód (0 - legközelebbi, 1 - lefelé (floor), 2 - felfelé (ceil), 3 - csonkítás (trunc))
+Lehetséges operandusok:
+ROUNDSS xmm1, xmm2/m32, imm8
