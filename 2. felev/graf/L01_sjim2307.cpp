@@ -1,5 +1,4 @@
-//sjim2307 - Széri József
-//Lab 1
+//Széri József - 514/2 - sjim2307
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -144,6 +143,80 @@ void kiir_el_lista(const vector<el> &el_lista)
     }
 }
 
+
+void szamolas_izolalt_csomopontok(const vector<vector<suly>> &szomszedsagi, vector<int> &izolalt_csomopontok)
+{
+    for (int i = 1; i < szomszedsagi.size(); i++)
+    {
+        int fokszam = 0;
+        for (int j = 1; j < szomszedsagi.size(); j++)
+        {
+            if(szomszedsagi[i][j].letezik)
+            {
+                fokszam++;
+            }
+        }
+
+        if(fokszam == 0)
+        {
+            izolalt_csomopontok.push_back(i);
+        } 
+    }
+}
+
+void szamolas_vegpontok(const vector<vector<el>> &incidencia, vector<int> &vegpontok)
+{
+    int sorok = incidencia.size();
+    int oszlopok = incidencia[0].size();
+
+    for (int i = 1; i < sorok; i++)
+    {
+        int fokszam = 0;
+        for (int j = 1; j < oszlopok; j++)
+        {
+            if(incidencia[i][j].suly.letezik)
+            {
+                fokszam++;
+            }
+        }
+
+        if(fokszam == 1)
+        {
+            vegpontok.push_back(i);
+        } 
+    }
+}
+
+bool regularis_e(const vector<vector<suly>> &szomszedsagi)
+{
+    vector<int> csucsok(szomszedsagi.size(), 0);
+
+    for (int i = 1; i < szomszedsagi.size(); i++)
+    {
+        int fokszam = 0;
+        for (int j = 1; j < szomszedsagi.size(); j++)
+        {
+            if(szomszedsagi[i][j].letezik)
+            {
+                fokszam++;
+            }
+        }
+
+        csucsok[i] = fokszam;
+    }
+
+    int kozos = csucsok[1];
+    for (int i = 2; i < szomszedsagi.size(); i++)
+    {
+        if(csucsok[i] != kozos)
+        {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
 int main()
 {
     freopen("graf.in", "r", stdin);
@@ -170,5 +243,32 @@ int main()
     vector<el> el_lista;
     alakit_szomszedsagi_lista_el_lista(szomszedsagi_lista, el_lista);
     kiir_el_lista(el_lista);
+
+    cout << endl << "Izolalt csomopontok: ";
+    vector<int> izolalt_csomopontok;
+    szamolas_izolalt_csomopontok(szomszedsagi_matrix, izolalt_csomopontok);
+    for (int i = 0; i < izolalt_csomopontok.size(); i++)
+    {
+        cout << izolalt_csomopontok[i] << " ";
+    }
+    if(izolalt_csomopontok.size() == 0)
+    {
+        cout << "Nincs";
+    }
+
+    cout << endl << "Vegpontok: ";
+    vector<int> vegpontok;
+    szamolas_vegpontok(incidencia, vegpontok);
+    for (int i = 0; i < vegpontok.size(); i++)
+    {
+        cout << vegpontok[i] << " ";
+    }
+    if(vegpontok.size() == 0)
+    {
+        cout << "Nincs";
+    }
+
+    cout << endl << "Regularis-e: " << (regularis_e(szomszedsagi_matrix) ? "IGEN" : "NEM");
+    
     return 0;
 }
