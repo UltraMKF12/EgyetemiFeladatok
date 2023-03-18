@@ -9,7 +9,6 @@ struct csomopont
     int id;
     bool volt_mar;
     bool szinezett;
-    vector<csomopont*> befele;
     vector<csomopont*> kifele;
 };
 
@@ -22,11 +21,9 @@ void graf_beolvas(int m, vector<csomopont> &csomopontok)
 
         //Iranyitott
         csomopontok[elso].kifele.push_back(&csomopontok[masodik]);
-        csomopontok[masodik].befele.push_back(&csomopontok[elso]);
 
         //Iranyitatlan
         csomopontok[masodik].kifele.push_back(&csomopontok[elso]);
-        csomopontok[elso].befele.push_back(&csomopontok[masodik]);
     }
 }
 

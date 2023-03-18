@@ -9,7 +9,6 @@ struct csomopont
 {
     int id;
     bool volt_mar;
-    vector<csomopont*> befele;
     vector<csomopont*> kifele;
 };
 
@@ -23,11 +22,9 @@ void graf_beolvas(int m, vector<csomopont> &csomopontok)
 
         //Iranyitott
         csomopontok[elso].kifele.push_back(&csomopontok[masodik]);
-        csomopontok[masodik].befele.push_back(&csomopontok[elso]);
 
         //Iranyitatlan
         csomopontok[masodik].kifele.push_back(&csomopontok[elso]);
-        csomopontok[elso].befele.push_back(&csomopontok[masodik]);
     }
 }
 
@@ -56,12 +53,12 @@ void clear_visit(vector<csomopont> &csomopontok)
 
 void dfs_visit(vector<csomopont> &csomopontok, vector<int> &csucsok, int jelenlegi)
 {
+    csomopontok[jelenlegi].volt_mar = true;
+    csucsok.push_back(jelenlegi);
     for (int i = 0; i < csomopontok[jelenlegi].kifele.size(); i++)
     {
         if(!csomopontok[jelenlegi].kifele[i]->volt_mar)
         {
-            csomopontok[jelenlegi].kifele[i]->volt_mar = true;
-            csucsok.push_back(csomopontok[jelenlegi].kifele[i]->id);
             dfs_visit(csomopontok, csucsok, csomopontok[jelenlegi].kifele[i]->id);
         }
     }
@@ -70,8 +67,6 @@ void dfs_visit(vector<csomopont> &csomopontok, vector<int> &csucsok, int jelenle
 void dfs(vector<csomopont> &csomopontok, vector<int> &csucsok, int kezdet)
 {
     clear_visit(csomopontok);
-    csucsok.push_back(kezdet);
-    csomopontok[kezdet].volt_mar = true;
     dfs_visit(csomopontok, csucsok, kezdet);
 }
 
@@ -87,15 +82,15 @@ void bfs(vector<csomopont> &csomopontok, vector<int> &csucsok, int kezdet)
 
     while (!sor.empty())
     {
-        csomopont *jelenlegi = sor.front();
+        csomopont *kovetkezo = sor.front();
         sor.pop();
-        csucsok.push_back(jelenlegi->id);
-        for (int i = 0; i < jelenlegi->kifele.size(); i++)
+        csucsok.push_back(kovetkezo->id);
+        for (int i = 0; i < kovetkezo->kifele.size(); i++)
         {
-            if(!jelenlegi->kifele[i]->volt_mar)
+            if(!kovetkezo->kifele[i]->volt_mar)
             {
-                sor.push(jelenlegi->kifele[i]);
-                jelenlegi->kifele[i]->volt_mar = true;
+                sor.push(kovetkezo->kifele[i]);
+                kovetkezo->kifele[i]->volt_mar = true;
             }
         }
     }
