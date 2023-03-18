@@ -87,15 +87,15 @@ void bfs(vector<csomopont> &csomopontok, vector<int> &csucsok, int kezdet)
 
     while (!sor.empty())
     {
-        csomopont *kovetkezo = sor.front();
+        csomopont *jelenlegi = sor.front();
         sor.pop();
-        csucsok.push_back(kovetkezo->id);
-        for (int i = 0; i < kovetkezo->kifele.size(); i++)
+        csucsok.push_back(jelenlegi->id);
+        for (int i = 0; i < jelenlegi->kifele.size(); i++)
         {
-            if(!kovetkezo->kifele[i]->volt_mar)
+            if(!jelenlegi->kifele[i]->volt_mar)
             {
-                sor.push(kovetkezo->kifele[i]);
-                kovetkezo->kifele[i]->volt_mar = true;
+                sor.push(jelenlegi->kifele[i]);
+                jelenlegi->kifele[i]->volt_mar = true;
             }
         }
     }
