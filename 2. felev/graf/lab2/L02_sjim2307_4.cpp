@@ -8,7 +8,6 @@ struct csomopont
 {
     int id;
     bool volt_mar;
-    vector<csomopont*> befele;
     vector<csomopont*> kifele;
 };
 
@@ -21,11 +20,38 @@ void graf_beolvas(int m, vector<csomopont> &csomopontok)
 
         //Iranyitott
         csomopontok[elso].kifele.push_back(&csomopontok[masodik]);
-        csomopontok[masodik].befele.push_back(&csomopontok[elso]);
+    }
+}
+void clear_visit(vector<csomopont> &csomopontok)
+{
+    for (int i = 0; i < csomopontok.size(); i++)
+    {
+        csomopontok[i].volt_mar = false;
+    }
+}
 
-        //Iranyitatlan
-        csomopontok[masodik].kifele.push_back(&csomopontok[elso]);
-        csomopontok[elso].befele.push_back(&csomopontok[masodik]);
+void dfs_visit_topological(vector<csomopont> &csomopontok, vector<int> &csucsok, int jelenlegi)
+{
+    csomopontok[jelenlegi].volt_mar = true;
+    for (int i = 0; i < csomopontok[jelenlegi].kifele.size(); i++)
+    {
+        if(!csomopontok[jelenlegi].kifele[i]->volt_mar)
+        {
+            dfs_visit_topological(csomopontok, csucsok, csomopontok[jelenlegi].kifele[i]->id);
+        }
+    }
+    csucsok.push_back(jelenlegi);
+}
+
+void dfs_topological(vector<csomopont> &csomopontok, vector<int> &csucsok)
+{
+    clear_visit(csomopontok);
+    for (int i = 0; i < csomopontok.size(); i++)
+    {
+        if(!csomopontok[i].volt_mar)
+        {
+            dfs_visit_topological(csomopontok, csucsok, csomopontok[i].id);
+        }
     }
 }
 
@@ -42,6 +68,13 @@ int main()
     
     graf_beolvas(m, csomopontok);
 
+    vector<int> rendezett_csucsok;
+    dfs_topological(csomopontok, rendezett_csucsok);
+    for (int i = rendezett_csucsok.size()-1; i > 0; i--)
+    {
+        cout << rendezett_csucsok[i] << " ";
+    }
+    cout << endl;
     
     return 0;
 }

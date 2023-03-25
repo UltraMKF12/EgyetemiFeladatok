@@ -45,6 +45,7 @@ void dfs_visit_kor(vector<csomopont> &csomopontok, int jelenlegi, bool &kor)
             kor = true;
         }
     }
+    csomopontok[jelenlegi].volt_mar = false;
 }
 
 bool dfs_kor(vector<csomopont> &csomopontok)
