@@ -1,7 +1,7 @@
 //Széri József - 514/2 - sjim2307
 #include <iostream>
 #include <vector>
-#include <algorithm>
+#include <queue>
 using namespace std;
 
 struct el;
@@ -34,47 +34,44 @@ void graf_beolvas(int m, vector<csomopont> &csomopontok)
     }
 }
 
-bool rendezes(el* elso, el* masodik)
-{
-    return elso->suly > masodik->suly;
-}
-
-void prim_feszitofa(vector<csomopont> &csomopontok, int kezdet, vector<el> &elek, int osszeg)
-{
-    vector<el*> lehetseges_utak;
-    csomopont *jelenlegi_pont = &csomopontok[kezdet];
-
-    jelenlegi_pont->volt_mar = true;
-
-    while (!lehetseges_utak.empty())
+struct rendezes
+{   
+    bool operator()(const el &elso, const el &masodik)
     {
-        //Kitorolni a mar rossz elemeket
-        for (int i = 0; i < lehetseges_utak.size(); i++)
+        return elso.suly > masodik.suly;
+    }
+};
+
+void prim_feszitofa(vector<csomopont> &csomopontok, int kezdet, vector<el> &elek, int &osszeg)
+{
+    priority_queue<el, vector<el>, rendezes> sor; 
+    for(el vonal : csomopontok[kezdet].kifele)
+    {
+        sor.push(vonal);
+    }
+
+    csomopontok[kezdet].volt_mar = true;
+
+    while(!sor.empty())
+    {
+        el jelenlegi = sor.top();
+        sor.pop();
+
+        if(!jelenlegi.vegpont->volt_mar)
         {
-            if(lehetseges_utak[i]->vegpont->volt_mar)
+            jelenlegi.vegpont->volt_mar = true;
+            osszeg += jelenlegi.suly;
+
+            elek.push_back(jelenlegi);
+
+            for(el vonal : csomopontok[jelenlegi.vegpont->id].kifele)
             {
-                lehetseges_utak.erase(lehetseges_utak.begin() + i);
+                if(!vonal.vegpont->volt_mar)
+                {
+                    sor.push(vonal);
+                }
             }
         }
-        
-        //Hozzadni a listahoz az uj lehetseges eleket.
-        for (int i = 0; i < jelenlegi_pont->kifele.size(); i++)
-        {
-            if(!jelenlegi_pont->kifele[i].vegpont->volt_mar)
-            {
-                lehetseges_utak.push_back(&jelenlegi_pont->kifele[i]);
-            }
-        }
-        
-        //Kivalasszuk a legrovidebb utat // A vegere tesszuk
-        sort(lehetseges_utak.begin(), lehetseges_utak.end(), rendezes);
-
-        el *jo_el = lehetseges_utak.back();
-        lehetseges_utak.pop_back();
-
-        jelenlegi_pont = jo_el->vegpont;
-        elek.push_back({jo_el->suly, jo_el->kezdopont, jo_el->vegpont});
-        osszeg += jo_el->suly;
     }
 }
 
@@ -84,29 +81,20 @@ int main()
     int n, m;
     cin >> n >> m;
     vector<csomopont> csomopontok(n+1);
-    for (int i = 0; i < csomopontok.size(); i++)
+    for(int i = 0; i < csomopontok.size(); i++)
     {
         csomopontok[i] = {i, false};
     }
     graf_beolvas(m, csomopontok);
-
-    // for (int i = 1; i < csomopontok.size(); i++)
-    // {
-    //     cout << csomopontok[i].id << ": ";
-    //     for (int j = 0; j < csomopontok[i].kifele.size(); j++)
-    //     {
-    //         cout << csomopontok[i].kifele[j].vegpont->id << "[" << csomopontok[i].kifele[j].suly << "], ";
-    //     }
-    //     cout << endl;
-    // }
     
-    int osszeg;
+    
+    int osszeg = 0;
     vector<el> elek;
     prim_feszitofa(csomopontok, 1, elek, osszeg);
     cout << "Koltseg: " << osszeg << endl;
     for (int i = 0; i < elek.size(); i++)
     {
-        cout << elek[i].kezdopont->id << " - " << elek[i].vegpont->id << ": " << elek[i].suly;
+        cout << elek[i].kezdopont->id << " - " << elek[i].vegpont->id << ": " << elek[i].suly << endl;
     }
     
     return 0;
