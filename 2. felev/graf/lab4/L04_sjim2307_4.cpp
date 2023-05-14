@@ -3,13 +3,18 @@
 #include <vector>
 using namespace std;
 
-struct csomopont
-{
-    int id;
-    bool volt_mar;
-    bool szinezett;
-    vector<csomopont*> kifele;
-};
+
+void szomszedsagi_matrix_felepites(vector<vector<suly>> &matrix, int m)
+{   
+    int pont1, pont2, suly;
+    for(int i = 0; i < m; i++)
+    {
+        cin >> pont1 >> pont2 >> suly;
+        matrix[pont1][pont2] = {suly, true};
+        matrix[pont2][pont1] = {suly, true};
+    }
+}
+
 
 int main()
 {

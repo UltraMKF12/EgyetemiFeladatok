@@ -12,7 +12,7 @@ struct csomopont
     int ertek;
     bool latogatott;
     csomopont* elozo;
-    vector<el> kifele;
+    vector<el*> kifele;
 };
 
 struct el
@@ -22,19 +22,20 @@ struct el
     csomopont* kovetkezo;
 };
 
-void graf_beolvas(int m, vector<csomopont> &csomopontok)
+void graf_beolvas(int m, vector<csomopont> &csomopontok, vector<el>& elek)
 {
     int elso, masodik, suly;
     for (int i = 0; i < m; i++)
     {
         cin >> elso >> masodik >> suly;
 
-        el vonal;
-        vonal.suly = suly;
-        vonal.jelenlegi = &csomopontok[elso];
-        vonal.kovetkezo = &csomopontok[masodik];
-        //Iranyitott
-        csomopontok[elso].kifele.push_back(vonal);
+        //El lista
+        elek[i].suly = suly;
+        elek[i].jelenlegi = &csomopontok[elso];
+        elek[i].kovetkezo = &csomopontok[masodik];
+
+        // //Iranyitott
+        csomopontok[elso].kifele.push_back(&elek[i]);
     }
 }
 
@@ -49,18 +50,20 @@ struct rendezes
 
 void init_s(vector<csomopont>& csomopontok, int kezdopont)
 {
-    //Ez mar megvan a MAIN-ben.
-    // for (int i = 1; i < csomopontok.size(); i++)
-    // {
-    //     csomopontok[i].ertek = INT_MAX;
-    //     csomopontok[i].elozo = nullptr;
-    // }
+    for (int i = 1; i < csomopontok.size(); i++)
+    {
+        csomopontok[i].ertek = INT_MAX;
+        csomopontok[i].elozo = nullptr;
+        csomopontok[i].latogatott = false;
+    }
     csomopontok[kezdopont].ertek = 0;
+    csomopontok[kezdopont].latogatott = true;
 }
 
-void relax(el &vonal)
+void relax(el& vonal)
 {
-    if(vonal.kovetkezo->ertek > vonal.jelenlegi->ertek + vonal.suly)
+    if(vonal.jelenlegi->latogatott &&
+       vonal.kovetkezo->ertek > vonal.jelenlegi->ertek + vonal.suly)
     {
         vonal.kovetkezo->ertek = vonal.jelenlegi->ertek + vonal.suly;
         vonal.kovetkezo->elozo = vonal.jelenlegi;
@@ -85,7 +88,7 @@ void Dijkstra_queue(vector<csomopont>& csomopontok, int kezdopont)
 
         for (int i = 0; i < legkisebb->kifele.size(); i++)
         {
-            relax(legkisebb->kifele[i]);
+            relax(*legkisebb->kifele[i]);
         }
     }
 }
@@ -100,7 +103,12 @@ int main()
     {
         csomopontok[i] = {i, INT_MAX, false, nullptr};
     }
-    graf_beolvas(m, csomopontok);
+    vector<el> elek(m);
+    for (int i = 0; i < m; i++)
+    {
+        elek[i] = {0, nullptr, nullptr};
+    }
+    graf_beolvas(m, csomopontok, elek);
 
     Dijkstra_queue(csomopontok, kezdopont);
 
