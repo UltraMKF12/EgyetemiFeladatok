@@ -119,7 +119,6 @@ int main()
 {
     freopen("2_be.txt", "r", stdin);
     freopen("2_ki.txt", "w", stdout);
-    // freopen("2_ki.txt", "w", stdout);
     int n, forras, nyelo;
     cin >> n >> forras >> nyelo;
 
