@@ -70,7 +70,6 @@ int Edmonds_Karp(vector<csomopont> &csomopontok, vector<el>& elek, int forras, i
                 {
                         jelenlegi_el->kovetkezo->elozo = jelenlegi_el->jelenlegi;
                         jelenlegi_el->kovetkezo->elozo_el = jelenlegi_el;
-                        jelenlegi_el->kovetkezo->latogatott = true;
                         sor.push(jelenlegi_el->kovetkezo);
                 }
             }
@@ -84,6 +83,8 @@ int Edmonds_Karp(vector<csomopont> &csomopontok, vector<el>& elek, int forras, i
                     jelenlegi_el = jelenlegi_el->jelenlegi->elozo_el)
             {
                 folyamat_novekedes = min(folyamat_novekedes, jelenlegi_el->kapacitas - jelenlegi_el->flow);
+                jelenlegi_el->jelenlegi->latogatott = true;
+                jelenlegi_el->kovetkezo->latogatott = true;
             }
 
             for(el *jelenlegi_el = csomopontok[nyelo].elozo_el; 
@@ -105,6 +106,7 @@ int Edmonds_Karp(vector<csomopont> &csomopontok, vector<el>& elek, int forras, i
 int main()
 {
     freopen("1_be.txt", "r", stdin);
+    freopen("1_ki.txt", "w", stdout);
     int n, forras, nyelo;
     cin >> n >> forras >> nyelo;
 
@@ -116,7 +118,24 @@ int main()
     vector<el> elek;
     graf_beolvas(csomopontok, elek);
 
-    cout << Edmonds_Karp(csomopontok, elek, forras, nyelo);
+    cout << Edmonds_Karp(csomopontok, elek, forras, nyelo) << endl;
+    for (int i = 1; i < csomopontok.size(); i++)
+    {
+        if(csomopontok[i].latogatott)
+        {
+            cout << csomopontok[i].id << " ";
+        }
+    }
+
+    cout << "; ";
+
+    for (int i = 1; i < csomopontok.size(); i++)
+    {
+        if(!csomopontok[i].latogatott)
+        {
+            cout << csomopontok[i].id << " ";
+        }
+    }
 
     return 0;
 }
