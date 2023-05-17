@@ -1,0 +1,65 @@
+Kritikus ut: 1 3 5 6 7 9 
+
+----------[1]----------
+Hossz: 0
+Legkorabbi elkezdes: 0
+Legkorabbi befejezes: 0
+Legkesobbi elkezdes: 0
+Legkesobbi befejezes: 0
+
+----------[2]----------
+Hossz: 7
+Legkorabbi elkezdes: 0
+Legkorabbi befejezes: 7
+Legkesobbi elkezdes: 2
+Legkesobbi befejezes: 9
+
+----------[3]----------
+Hossz: 9
+Legkorabbi elkezdes: 0
+Legkorabbi befejezes: 9
+Legkesobbi elkezdes: 0
+Legkesobbi befejezes: 9
+
+----------[4]----------
+Hossz: 12
+Legkorabbi elkezdes: 7
+Legkorabbi befejezes: 19
+Legkesobbi elkezdes: 11
+Legkesobbi befejezes: 23
+
+----------[5]----------
+Hossz: 8
+Legkorabbi elkezdes: 9
+Legkorabbi befejezes: 17
+Legkesobbi elkezdes: 9
+Legkesobbi befejezes: 17
+
+----------[6]----------
+Hossz: 6
+Legkorabbi elkezdes: 17
+Legkorabbi befejezes: 23
+Legkesobbi elkezdes: 17
+Legkesobbi befejezes: 23
+
+----------[7]----------
+Hossz: 9
+Legkorabbi elkezdes: 23
+Legkorabbi befejezes: 32
+Legkesobbi elkezdes: 23
+Legkesobbi befejezes: 32
+
+----------[8]----------
+Hossz: 5
+Legkorabbi elkezdes: 23
+Legkorabbi befejezes: 28
+Legkesobbi elkezdes: 27
+Legkesobbi befejezes: 32
+
+----------[9]----------
+Hossz: 0
+Legkorabbi elkezdes: 32
+Legkorabbi befejezes: 32
+Legkesobbi elkezdes: 32
+Legkesobbi befejezes: 32
+
