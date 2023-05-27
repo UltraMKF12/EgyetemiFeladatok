@@ -50,11 +50,14 @@ Quadrant::Quadrant(Point topLeftCorner, Point bottomRightCorner, int depth)
 }
 
 Quadrant::~Quadrant()
-{
-    delete this->topLeft;
-    delete this->topRight;
-    delete this->bottomLeft;
-    delete this->bottomRight;
+{   
+    if(!this->isLeaf)
+    {
+        delete this->topLeft;
+        delete this->topRight;
+        delete this->bottomLeft;
+        delete this->bottomRight;
+    }
 }
 
 void Quadrant::split()
@@ -95,7 +98,6 @@ void Quadrant::insert(Point newPoint)
     {
         if(currentPoint == newPoint) return;
     }
-
 
     if(!isInBounds(newPoint)) return;
     points.push_back(newPoint);
@@ -152,13 +154,41 @@ void Quadrant::remove(Point point)
     if(!found) return;
 
     points.erase(points.begin() + position);
-    if(points.size() < 1)
+    if(points.size() <= 1)
     {
+        if(!this->isLeaf)
+        {
+            delete this->topLeft;
+            delete this->topRight;
+            delete this->bottomLeft;
+            delete this->bottomRight;
+        }
         this->isLeaf = true;
-        delete topLeft;
-        delete topRight;
-        delete bottomLeft;
-        delete bottomRight;
+    }
+    else
+    {
+        if(point.x <= ((this->topLeftCorner.x + this->bottomRightCorner.x) / 2))
+        {
+            if(point.y <= ((this->topLeftCorner.y + this->bottomRightCorner.y) / 2))
+            {
+                topLeft->remove(point);
+            }
+            else
+            {
+                bottomLeft->remove(point);
+            }
+        } 
+        else
+        {
+            if(point.y <= ((this->topLeftCorner.y + this->bottomRightCorner.y) / 2))
+            {
+                topRight->remove(point);
+            }
+            else
+            {
+                bottomRight->remove(point);
+            }
+        }
     }
 }
 
