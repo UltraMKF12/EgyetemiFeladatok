@@ -265,6 +265,11 @@ QuadTree::QuadTree(Point topLeftCorner, Point bottomRightCorner)
     root = new Quadrant(topLeftCorner, bottomRightCorner, 0);
 }
 
+QuadTree::QuadTree()
+{
+    root = nullptr;
+}
+
 QuadTree::~QuadTree()
 {
     delete root;

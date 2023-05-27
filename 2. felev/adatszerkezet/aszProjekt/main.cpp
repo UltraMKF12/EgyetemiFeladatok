@@ -14,7 +14,7 @@ int main()
     alma.remove(Point(1, 1));
     alma.insert(Point(4, 4));
     alma.remove(Point(4, 4));
-    Quadrant* asd = alma.search(Point(2, 2));
+    Quadrant* asd = alma.search(Point(2, 3));
     cout << asd->bottomRightCorner.x << " " << asd->bottomRightCorner.y << endl;
     alma.print();
     return 0;

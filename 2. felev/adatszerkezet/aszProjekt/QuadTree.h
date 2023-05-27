@@ -48,6 +48,7 @@ class QuadTree
         Quadrant* root;
     
     public:
+        QuadTree();
         QuadTree(Point topLeftCorner, Point bottomRightCorner);
         ~QuadTree();
         void insert(Point point);
