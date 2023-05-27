@@ -1,62 +1,57 @@
 #ifndef QUADTREE.H
 #define QUADTREE.H
 
+#include <vector>
+using namespace std;
+
 struct Point
 {
     int x;
     int y;
 
-    Point()
-    {
-        x = 0;
-        y = 0;
-    }
-
-    Point(int valueX, int valueY)
-    {
-        x = valueX;
-        y = valueY;
-    }
+    Point();
+    Point(int x, int y);
+    Point operator/(int number) const;
+    Point operator+(int number) const;
+    Point operator+(const Point& number) const;
+    bool operator==(const Point& other) const;
+    bool operator!=(const Point& other) const;
 };
 
-struct Node
+class Quadrant
 {
-    Point pos;
-    int data;
+    protected:
+        Point topLeftCorner;
+        Point bottomRightCorner;
 
-    Node(Point _pos, int _data)
-    {
-        pos = _pos;
-        data = _data;
-    }
+        int depth;
+        bool isLeaf;
 
-    Node()
-    {
-        data = 0;
-    }
+        Quadrant* topLeft;
+        Quadrant* topRight;
+        Quadrant* bottomLeft;
+        Quadrant* bottomRight;
+        vector<Point*> points;
+
+    public:
+        Quadrant(Point topLeftCorner, Point bottomRightCorner, int depth);
+        ~Quadrant();
+
+        void split();
 };
-
 
 class QuadTree
 {
-    protected:
-        Point topLeftPosition;
-        Point bottomRightPosition;
-        int depth;
-
-        QuadTree* topLeftQuad;
-        QuadTree* topRightQuad;
-        QuadTree* bottomLeftQuad;
-        QuadTree* bottomRightQuad;
-
+    private:
+        Quadrant* root;
+    
     public:
-        QuadTree();
-        QuadTree(Point topLeft, Point bottomRight);
-        void insert();
-        void remove();
-        QuadTree* search();
+        QuadTree(Point topLeftCorner, Point bottomRightCorner);
+        ~QuadTree();
+        void insert(Point point);
+        Quadrant* search(Point point);
+        void remove(Point point);
         void print();
-        int getDepth();
 };
 
 #endif
