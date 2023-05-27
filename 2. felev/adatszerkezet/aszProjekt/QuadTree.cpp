@@ -192,6 +192,50 @@ void Quadrant::remove(Point point)
     }
 }
 
+Quadrant* Quadrant::search(Point point)
+{
+    if(!isInBounds(point)) return nullptr;
+
+    bool found = false;
+    for(int i = 0; i < this->points.size(); i++)
+    {
+        if(points[i] == point)
+        {
+            found = true;
+            break;
+        }
+    }
+
+    if(!found) return nullptr;
+
+    if(this->isLeaf) return this;
+    else
+    {
+        if(point.x <= ((this->topLeftCorner.x + this->bottomRightCorner.x) / 2))
+        {
+            if(point.y <= ((this->topLeftCorner.y + this->bottomRightCorner.y) / 2))
+            {
+                return topLeft->search(point);
+            }
+            else
+            {
+                return bottomLeft->search(point);
+            }
+        } 
+        else
+        {
+            if(point.y <= ((this->topLeftCorner.y + this->bottomRightCorner.y) / 2))
+            {
+                return topRight->search(point);
+            }
+            else
+            {
+                return bottomRight->search(point);
+            }
+        }
+    }
+}
+
 void Quadrant::print(vector<vector<int>> &table, int &value) const
 {   
     if(this->isLeaf)
@@ -236,17 +280,17 @@ void QuadTree::remove(Point point)
     root->remove(point);
 }
 
+Quadrant* QuadTree::search(Point point)
+{
+    return root->search(point);
+}
+
 void QuadTree::print()
 {
     vector<vector<int>> table(root->bottomRightCorner.x+1, vector<int>(root->bottomRightCorner.y+1, 0));
     int value = 1;
 
     root->print(table, value);
-
-    // for(Point currentPoint : root->points)
-    // {
-    //     table[currentPoint.x][currentPoint.y] = 0;
-    // }
 
     for(int i = root->topLeftCorner.x; i <= root->bottomRightCorner.x; i++)
     {
@@ -257,5 +301,4 @@ void QuadTree::print()
         cout << endl;
     }
     cout << endl;
-
 }
