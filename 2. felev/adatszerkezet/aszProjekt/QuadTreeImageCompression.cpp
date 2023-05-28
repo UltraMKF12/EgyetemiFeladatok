@@ -96,7 +96,7 @@ void QuadrantImageCompression::buildTree(const std::vector<unsigned char> &image
     }
 
     //Calculate the avarage color
-    int pixelCount = width * height;
+    int pixelCount = (width - this->topLeftCorner.x) * (height - this->topLeftCorner.y);
     avg_r /= pixelCount;
     avg_g /= pixelCount;
     avg_b /= pixelCount;
@@ -255,10 +255,10 @@ void QuadTreeImageCompression::printTreeImage()
     int width = root->bottomRightCorner.x+1;
     std::vector<unsigned char> newImage(width * height * 4, 255);
 
-    // root->printTreeImage(newImage, width);
+    root->printTreeImage(newImage, width);
 
     // Encode and save the image file
-    unsigned error_img = lodepng::encode("output.png", image, width, height);
+    unsigned error_img = lodepng::encode("output.png", newImage, width, height);
 
     // Check if the encoding was successful
     if (error_img) 
@@ -314,9 +314,9 @@ int main(int argc, char* argv[])
 {
 
     int treshold, error, depth;
-    // const char* filename = getParameters(argc, argv, treshold, error, depth);
+    const char* filename = getParameters(argc, argv, treshold, error, depth);
   
-    const char *filename = "C:\\Users\\harco\\Documents\\EgyetemiFeladatok\\2. felev\\adatszerkezet\\aszProjekt\\input.png"; treshold = 50; error = 10; depth = 5;
+    // const char *filename = "C:\\Users\\harco\\Documents\\EgyetemiFeladatok\\2. felev\\adatszerkezet\\aszProjekt\\input.png"; treshold = 50; error = 10; depth = 5;
     
     QuadTreeImageCompression img(filename, treshold, error, depth);
     img.buildTree();
