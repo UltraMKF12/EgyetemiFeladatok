@@ -8,12 +8,13 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
-                "C:\\Users\\harco\\Documents\\EgyetemiFeladatok\\2. felev\\adatszerkezet\\aszProjekt\\QuadTree.cpp",
+                "${workspaceFolder}\\QuadTree.cpp",
+                "${workspaceFolder}\\lodepng.c",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],
             "options": {
-                "cwd": "${workspaceFolder}/aszProjekt"
+                "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [
                 "$gcc"
