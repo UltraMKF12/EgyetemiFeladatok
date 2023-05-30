@@ -3,6 +3,8 @@
 #include <vector>
 using namespace std;
 
+//The point struct stores a coordinate in a 2D space
+//Also a few operators are overloaded for easier handling.
 Point::Point()
 {
     x = 0;
@@ -35,7 +37,12 @@ bool Point::operator==(const Point& other) const
     return ((this->x == other.x) && (this->y == other.y));
 }
 
+bool Point::operator>=(const Point& other) const
+{
+    return (this->x >= other.x) && (this->y >= other.y);
+}
 
+//Sets the Quadrant variables.
 Quadrant::Quadrant(Point topLeftCorner, Point bottomRightCorner, int depth)
 {
     this->topLeftCorner = topLeftCorner;
@@ -49,6 +56,7 @@ Quadrant::Quadrant(Point topLeftCorner, Point bottomRightCorner, int depth)
     this->bottomRight = nullptr;
 }
 
+//Frees the pointer if needed.
 Quadrant::~Quadrant()
 {   
     if(!this->isLeaf)
@@ -60,6 +68,8 @@ Quadrant::~Quadrant()
     }
 }
 
+//Splits the Quadrant into four equal parts if possible.
+//The minimum size is a 2x2 area.
 void Quadrant::split()
 {
     // If a coordinate in topleft or bottomright are the same, we can not split it into four.
@@ -85,12 +95,16 @@ void Quadrant::split()
                                 depth+1);
 }
 
+//Return if a coordinate will fit into the Quadrant.
 bool Quadrant::isInBounds(Point point)
 {
     return (point.x >= this->topLeftCorner.x && point.x <= this->bottomRightCorner.x) &&
            (point.y >= this->topLeftCorner.y && point.y <= this->bottomRightCorner.y);
 }
 
+
+//Recursively go through every Quadrant that meets the requirments and split it until there is a quadrant, 
+//Where newPoint is the only member.
 void Quadrant::insert(Point newPoint)
 {
     //Check to make sure it's not already there
@@ -135,6 +149,8 @@ void Quadrant::insert(Point newPoint)
 
 }
 
+
+//Removes a point from the Quadrant, and deletes every quadrant empty quadrant after point removal.
 void Quadrant::remove(Point point)
 {
     if(!isInBounds(point)) return;
@@ -192,6 +208,9 @@ void Quadrant::remove(Point point)
     }
 }
 
+
+//Returns the Quadrrant the point is in. 
+//If not found or out of bounds returns nullptr.
 Quadrant* Quadrant::search(Point point)
 {
     if(!isInBounds(point)) return nullptr;
@@ -236,6 +255,8 @@ Quadrant* Quadrant::search(Point point)
     }
 }
 
+
+//Goes through the whole Tree recursively and for every Leaf fill the table array with a new value.
 void Quadrant::print(vector<vector<int>> &table, int &value) const
 {   
     if(this->isLeaf)
@@ -260,9 +281,18 @@ void Quadrant::print(vector<vector<int>> &table, int &value) const
 }
 
 
+//Only if the topLeftCorner is smaller or equal to the bottomRightCorner is the tree valid.
+//Quad Tree is an "interface" where we store the root node and call function from.
 QuadTree::QuadTree(Point topLeftCorner, Point bottomRightCorner)
 {
-    root = new Quadrant(topLeftCorner, bottomRightCorner, 0);
+    if(bottomRightCorner >= topLeftCorner)
+    {
+        root = new Quadrant(topLeftCorner, bottomRightCorner, 0);
+    }
+    else
+    {
+        throw "Impossible coordinate";
+    }
 }
 
 QuadTree::QuadTree()
@@ -290,6 +320,7 @@ Quadrant* QuadTree::search(Point point)
     return root->search(point);
 }
 
+//Print out a 2D array
 void QuadTree::print()
 {
     vector<vector<int>> table(root->bottomRightCorner.x+1, vector<int>(root->bottomRightCorner.y+1, 0));

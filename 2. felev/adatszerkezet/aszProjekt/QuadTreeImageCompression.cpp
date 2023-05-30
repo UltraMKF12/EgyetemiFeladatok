@@ -199,9 +199,6 @@ void QuadrantImageCompression::printTreeImage(std::vector<unsigned char> &image,
 
 
 
-
-
-
 class QuadTreeImageCompression : public QuadTree
 {
     private:
@@ -231,7 +228,7 @@ QuadTreeImageCompression::QuadTreeImageCompression(const char* image_name, int t
         std::cout << "Error while decoding image: " << lodepng_error_text(error_img) << std::endl;
         exit(1);
     }
-
+    
     root = new QuadrantImageCompression(Point(0,0), Point(width-1, height-1), 0);
     this->treshold = treshold;
     this->error = error;
@@ -272,8 +269,6 @@ void QuadTreeImageCompression::printTreeImage()
 
 
 
-
-
 char* getParameters(int argc, char* argv[], int &treshold, int &error, int &depth)
 {
     if(argc != 5)
@@ -309,14 +304,11 @@ char* getParameters(int argc, char* argv[], int &treshold, int &error, int &dept
     return argv[1];
 }
 
-
 int main(int argc, char* argv[])
 {
 
     int treshold, error, depth;
     const char* filename = getParameters(argc, argv, treshold, error, depth);
-  
-    // const char *filename = "C:\\Users\\harco\\Documents\\EgyetemiFeladatok\\2. felev\\adatszerkezet\\aszProjekt\\input.png"; treshold = 50; error = 10; depth = 5;
     
     QuadTreeImageCompression img(filename, treshold, error, depth);
     img.buildTree();

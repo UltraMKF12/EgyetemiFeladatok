@@ -15,6 +15,7 @@ struct Point
     Point operator+(int number) const;
     Point operator+(const Point& number) const;
     bool operator==(const Point& other) const;
+    bool operator>=(const Point& other) const;
 };
 
 struct Quadrant
