@@ -3,6 +3,9 @@
         "iostream": "cpp",
         "new": "cpp",
         "cmath": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "*.tcc": "cpp",
+        "ostream": "cpp",
+        "iosfwd": "cpp"
     }
 }
