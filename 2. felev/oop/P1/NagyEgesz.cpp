@@ -1,8 +1,10 @@
+//Széri József - 514/2
+//sjim2307
+
 #pragma once
 #include <iostream>
 using namespace std;
 
-//[ELOJEL: -1, 0, 1][1][2][3][7][6][9]
 class NagyEgesz
 {
     private:
@@ -19,6 +21,19 @@ class NagyEgesz
         ~NagyEgesz();
 
         class NullavalValoOsztas{};
+
+        NagyEgesz operator+(const NagyEgesz &other);
+        NagyEgesz operator-(const NagyEgesz &other);
+        NagyEgesz operator*(const NagyEgesz &other);
+        NagyEgesz operator/(const NagyEgesz &other);
+        NagyEgesz& operator++();
+        NagyEgesz operator++(int);
+
+        NagyEgesz& operator=(const NagyEgesz &other);
+        NagyEgesz& operator+=(const NagyEgesz &other);
+        NagyEgesz& operator-=(const NagyEgesz &other);
+        NagyEgesz& operator*=(const NagyEgesz &other);
+        NagyEgesz& operator/=(const NagyEgesz &other);
 
         ostream& print(ostream &s);
 };
@@ -103,12 +118,119 @@ NagyEgesz::NagyEgesz(long long szam)
     }
 }
 
-
 NagyEgesz::~NagyEgesz()
 {
     delete[] szam;
 }
 
+// +-*/
+NagyEgesz NagyEgesz::operator+(const NagyEgesz &other) 
+{
+    int hossz;
+
+    if(this->hossz > other.hossz)
+    {
+        hossz = other.hossz;
+    }
+    else
+    {
+        hossz = this->hossz;
+    }
+
+    if(this->elojel == other.elojel)
+    {
+        elojel = this->elojel;
+    }
+    else if(this->elojel >= 0 && other.elojel >= 0)
+    {   
+        if(this->elojel == 0 && other.elojel == 0)
+        {
+            elojel = 0;
+        }
+        else
+        {
+            elojel = 1; // Lekezelni a 0 + POZITIV eseteket.
+        }
+    }
+    else
+    {
+        //Pozitiv + Negativ , Negativ + Pozitiv esetek;
+    }
+
+
+    int szamok[1000];
+}
+
+NagyEgesz NagyEgesz::operator-(const NagyEgesz &other) 
+{
+
+}
+
+NagyEgesz NagyEgesz::operator*(const NagyEgesz &other) 
+{
+
+}
+
+NagyEgesz NagyEgesz::operator/(const NagyEgesz &other) 
+{
+
+}
+
+// Prefix
+NagyEgesz& NagyEgesz::operator++() 
+{
+    this->operator+(NagyEgesz(1));
+    return *this;
+}
+
+// Suffix
+NagyEgesz NagyEgesz::operator++(int) 
+{
+    NagyEgesz temp = *this;
+    this->operator+(NagyEgesz(1));
+    return temp;
+}
+
+// =
+NagyEgesz& NagyEgesz::operator=(const NagyEgesz &other)
+{
+    this->hossz = other.hossz;
+    this->elojel = other.elojel;
+    delete[] this->szam;
+    this->szam = new int[other.hossz];
+    for (int i = 0; i < other.hossz; i++)
+    {
+        this->szam[i] = other.szam[i];
+    }
+
+    return *this;
+}
+
+NagyEgesz& NagyEgesz::operator+=(const NagyEgesz &other)
+{
+    this->operator=((this->operator+(other)));
+    return *this;
+}
+
+NagyEgesz& NagyEgesz::operator-=(const NagyEgesz &other)
+{
+    this->operator=((this->operator-(other)));
+    return *this;
+}
+
+NagyEgesz& NagyEgesz::operator*=(const NagyEgesz &other)
+{
+    this->operator=((this->operator*(other)));
+    return *this;
+}
+
+NagyEgesz& NagyEgesz::operator/=(const NagyEgesz &other)
+{
+    this->operator=((this->operator/(other)));
+    return *this;
+}
+
+// <<
 ostream& NagyEgesz::print(ostream &s)
 {
     if(this->elojel < 0)
@@ -130,10 +252,14 @@ ostream& operator <<(ostream &s, NagyEgesz &o){
 
 int main()
 {
-    int alma[] = {1,2,3, 4, 5, 6, 3, 2, 2,4, 6, 6, 7, 7,7 , 7, 7,7 ,7 ,7 ,4,1 , 2,2 , 1,1 ,3 , 5, 2,6,5 ,3};
+    int egy[] =   {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    int ketto[] = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-    NagyEgesz a(0, 32, alma);
-    cout << a;
+    NagyEgesz a(1, 20, egy);
+    NagyEgesz b(1, 20, ketto);
+
+    NagyEgesz c((a + b));
+    cout << c;
 
     return 0;
 }
