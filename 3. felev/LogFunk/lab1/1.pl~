@@ -1,0 +1,3 @@
+osszead(Lista1, Lista2, ListaVissza) :-
+    ListaVissza is Lista1,
+    append(Lista2, ListaVissza).
