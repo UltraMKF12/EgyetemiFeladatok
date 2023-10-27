@@ -1,0 +1,53 @@
+Table ZsetonBuyer {
+  id int [primary key]
+  name varchar
+  trusted_seller int
+  purchases int
+}
+
+Table ZsetonSeller {
+  id int [primary key]
+  name varchar
+  inventory int
+  clients int
+  sales int
+}
+
+Table Purchases {
+  id int [primary key]
+  purchase_date date
+  quantity int
+  type int
+  buyer int
+  seller int
+}
+
+Table ZsetonType {
+  id int [primary key]
+  name varchar
+  uses int
+  color varchar
+  maker int
+}
+
+Table Event {
+  id int [primary key]
+  name varchar
+  description varchar
+}
+
+Table ZsetonMaker {
+  id int [primary key]
+  name varchar
+  zsetons_made int
+}
+
+Ref: ZsetonBuyer.purchases < Purchases.id
+Ref: ZsetonSeller.sales < Purchases.id
+Ref: ZsetonSeller.clients <> ZsetonBuyer.trusted_seller
+Ref: Purchases.type - ZsetonType.id
+Ref: Purchases.buyer - ZsetonSeller.id
+Ref: Purchases.seller - ZsetonBuyer.id
+Ref: ZsetonType.uses < Event.id
+Ref: ZsetonMaker.zsetons_made < ZsetonType.id
+Ref: ZsetonType.maker - ZsetonMaker.id
