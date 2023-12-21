@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Prof.Prof">
+    <meta name="description" content="Learning website to learn HTML with a tutorial video.">
+    <title>My first tutorial webpage</title>
+    <link rel="icon" href="html.png" type="image/x-icon">
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+    <header>
+        <nav></nav>
+    </header>
+    <main>
+        <article></article>
+        <section></section>
+        <aside>
+            <details>
+                <summary>Question</summary>
+                <p><mark>Answer</mark></p>
+            </details>
+        </aside>
+        <table>
+            <caption>Szépséges táblázat különleges kiadás</caption>
+            <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th scope="col">Jó Számok</th>
+                    <th scope="col">Szép Számok</th>
+                    <th scope="col">Kedves Számok</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1-3</th>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <th scope="row">4-6</th>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>6</td>
+                </tr>
+                <tr>
+                    <th scope="row">7-8</th>
+                    <td>7</td>
+                    <td>8</td>
+                    <td>9</td>
+                </tr>
+                <tr>
+                    <th scope="row">Extra</th>
+                    <td colspan="3">44444444444542344444444444444444444444444</td>
+                </tr>
+                <tr>
+                    <th rowspan="2" scope="row">Special</th>
+                    <td rowspan="2">43</td>
+                    <td colspan="2">Megoldás</td>
+                </tr>
+                <tr>
+                    <td>Mindenre</td>
+                    <td>is.</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">And that's about it...</td>
+                </tr>
+            </tfoot>
+        </table>
+    </main>
+    <footer></footer>
+    <h1>Tutorial Webpage for learning</h1>
+
+    <nav>
+        <ul>
+            <li><a href="#first">First</a></li>
+            <li><a href="#second">Second</a></li>
+        </ul>
+    </nav>
+
+    <hr>
+
+    <section id="first">
+        <h2>About learning <abbr title="Valami hipertext nemtudommi"><a href="https://en.wikipedia.org/wiki/HTML"
+                    target="_blank">HTML</a></abbr></h2>
+        <figure>
+            <img src="html.png" alt="HTML logo" title="This is the html cool stuff" width="256" height="256"
+                loading="eager">
+            <figcaption>
+                Ez a html logoja, ugye milyen cukki?
+            </figcaption>
+        </figure>
+        <p>The first paragraph for me.</p>
+
+        <h3>Why I chose HTML</h3>
+        <p>It's needed for work.
+            <br>...That's about it...
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;See ya!
+        </p>
+
+        <ol>
+            <li>Sanyika foldje</li>
+            <li>Sanyika haza.</li>
+            <li>Sanyika kisgrofi cime</li>
+        </ol>
+
+        <ul>
+            <li>Hagyma</li>
+            <li>Sajt</li>
+            <li>Szalami</li>
+            <li>Krumpli</li>
+        </ul>
+
+        <dl>
+            <dt>Krumpli</dt>
+            <dd>Nagyon finom kis hagymaizu cucc</dd>
+
+            <dt>Hagyma</dt>
+            <dd>Krumpliizu folyadek.</dd>
+        </dl>
+    </section>
+    <hr>
+
+    <!-- TODO: Make it beautiful!! -->
+    <section id="second">
+        <h2>About learning HTML</h2>
+        <p>The first paragraph for me.</p>
+
+        <h3>Why I <strong>chose</strong> HTML</h3>
+        <p>It's needed for <em>work.</em></p>
+    </section>
+    <hr>
+
+    <address>
+        Sanyifolde<br>
+        64 Utca, 42 Falu3, Siekerlinder
+    </address>
+    <p>&lt;&lt;&lt; &copy; <a href="about.html">Prof.Prof</a> &gt;&gt;&gt;</p>
+
+    <div id="contact">
+        <h2>Contact Me!</h2>
+        <p>Tell your opinion about the website</p>
+
+        <form action="https://httpbin.org/get">
+            <p>
+                <label for="firstName">First Name: </label>
+                <input type="text" name="firstName" id="firstName" placeholder="Sanyika" autocomplete="off" required
+                    autofocus>
+            </p>
+            <p>
+                <label for="lastName">Last Name: </label>
+                <input type="text" name="lastName" id="lastName" placeholder="Almanandor" autocomplete="off" required>
+            </p>
+            <p>
+                <label for="password">Password: </label>
+                <input type="password" name="password" id="password" placeholder="Password" required>
+            </p>
+            <p>
+                <label for="phone">Phone: </label>
+                <input type="tel" name="phone" id="phone" placeholder="5555555555" pattern="[0-9]{3}[0-9]{3}[0-9]{4}" required>
+            </p>
+            <p>
+                <label for="decade">Decade: </label>
+                <input type="number" name="decade" id="decade" min="1950" max="2050" step="10" value="1980" required>
+            </p>
+        </form>
+    </div>
+
+    <a href="#">Back to top</a>
+</body>
+
+</html>
