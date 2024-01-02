@@ -1,0 +1,12 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+}
+
+h1 {
+    border: 2px dashed red;
+    width: 400px;
+    font-size: 3rem;
+    padding: 0.5em;
+}
