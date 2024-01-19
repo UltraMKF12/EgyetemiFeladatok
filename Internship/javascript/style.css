@@ -1,0 +1,89 @@
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+button {
+    font-family: inherit;
+    font-size: 1.2em;
+    padding: 10px 20px;
+    background-color: hsl(211, 100%, 70%);
+    border: 2px solid black;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.25s;
+    user-select: none;
+}
+
+button:hover {
+    background-color: hsl(211, 100%, 50%);
+}
+
+button:active {
+    background-color: hsl(211, 100%, 30%);
+    color: white;
+}
+
+label {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+p {
+    font-size: 2em;
+    color: crimson;
+    text-shadow: 1px 1px 5px crimson;
+    text-align: center;
+    overflow-wrap: break-word;
+}
+
+p::selection {
+    background-color: aquamarine;
+    color: darkred;
+}
+
+input:is([type="number"], [type="text"]) {
+    text-align: center;
+    font-size: 2rem;
+    width: 10rem;
+    border: 2px solid black;
+    margin-bottom: 15px;
+    border-radius: 15px;
+}
+
+input[type="checkbox"] {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+form {
+    background-color: rgb(210, 234, 255);
+    text-align: center;
+    max-width: 30em;
+    margin: auto;
+    border-radius: 20px;
+    padding: 5px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.294);
+}
+
+h1 {
+    color: rgb(0, 136, 255);
+    text-align: center;
+}
+
+.application {
+    background-color: rgb(189, 247, 255);
+    width: 450px;
+    margin: auto;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+#passwordText {
+    text-decoration: underline;
+}
+
+.buttonDiv {
+    margin-top: 1rem;
+    text-align: center;
+}
