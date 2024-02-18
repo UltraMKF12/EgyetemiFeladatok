@@ -1,0 +1,21 @@
+1 class felelős a játéktér adatainak a tárolására, és funkciók a játéktér módosítására.
+1 class felelős a játék logikáért
+1 class a grafikus felületért.
++1 class a snakeért magárét, mint láncolt lista
+
+Játék: Szimpla snake.
+
+Játéktér class:
+20x20 grid tárolása, 0 az üres tér, 1 az alma, 2+ a snake teste.
+
+Játék logika:
+-Alma megevése, ami eltünteti az almát, ad egy hosszúságot a snakenek, és random üres helyre teszi az almát.
+-Kigyó mozgatása: WASD vagy NYILAK. Minidg tetszteli mi van előtte, ha kimegy a tömbből, akkor game over, ha magába megy akkor is game over. Ha alma, akkor odamozog és eggyel nagyobb lesz.
+A kígyó egy linked listként van tárolva. Van a kigyó feje ami játszható, és mozgás után, minden elem a linked listben updateeli a pozicióját. Ez a snake logika jobb lenne ha a játéktér classon belül lenne, ott könnyen lehet updatelni a játéktér számokat is.
+-Van a moveGrow(), amivel a kígyó eggyel nagyobb lesz mozgással, azaz nem updatelődik a kigyó hossza, hanem új feje lesz az almára lépve mert ezzel lehet a legjobban szimulálni, hogy növekedett a kigyó. Üres térve léptve meg csak sima move(), ahol magával húzza a többi testet. Meg persze a moveCollisionCheck() ami teszteli, hogy mi van előtte.
+-A snake minden x másodpercben mozog timer segitségével, és az irányba automatikus a mozgás. Gomblenyomással változtatható.
+
+Játék Grafikus felület:
+-Az egész képernyő felület az maga a játéktér pixeles kirajzolása.
+-Szimpla szinek kirajzolása, alma piros, snake zöld.
+-Hangok mikor a snake felvett egy almát és hang amikor a snake meghalt. Amikor vége a snakenek Kiad egy képernyő eventet, hogy vesztett a player és kilép az alkalmazás.
