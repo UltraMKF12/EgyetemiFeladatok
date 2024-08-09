@@ -1,2 +1,0 @@
-Ki kell tanulni a html-t amennyire csak lehet, többnyire minden fontosabb dolgát és begyakorolgatni.
-Ezek után a css-el kell ugyanezt tenni.
